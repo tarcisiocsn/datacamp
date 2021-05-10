@@ -856,7 +856,34 @@ dogs.index -> dará output com que index começa start = 0, stop = 7, step = 1 .
                                              o equivalente com o de cima
                                              dogs_ind.loc[['Bella', 'Stella']] -> o .loc filter the index values, então vai tirar a coluna de index e colocar 
                                               
-                                             
+                                             # um pouco mais do .loc
+                                              dogs_ind2 = dogs.set_index('breed')
+                                              isso ai vai mostrar a coluna de index apenas com raças 
+                                              para encontrar apenas uma raça e ver o dataframe dele, só usar o que tá embaixo:
+                                              dogs_ind2.loc['Labrador']
+                                              
+                                              # Multi-level indexes hierarchical indexes
+                                              técnicamente é escolher a ordem de cada coluna, e tirar tbm a coluna do index 
+                                              dogs_ind3 = dogs.set_index(['breed', 'color'])
+                                              
+                                              #Subset the outer level with a list -> é meio que se tiver um desses que você escolher, eles vao ficar "colados", ver um exemplo depois bicho, que tu vai entender
+                                              dogs_ind3_.loc[['labrador', 'Chiahuahua']] -> como labrador terá 2 cachorros, ai terá um subconjunto com os 2 nomes e 2 cores de cada um 
+                                              
+                                              # subset inner level  with a list of tuples , meio que especificar mesmo qual será dos cachorros
+                                              dos_ind3.loc[[('labrador', 'brown'), ('chihuahua', 'tan')]]
+                                              
+                                              # Sorting by index values 
+                                              dogs_ind3.sort_values()
+                                              # by default, it sorts all index levels from outer to inner, in ascending order
+                                              
+                                              # Controlling sort_index
+                                              dogs_ind3.sort_index(level = ['color', 'breed'], ascending = [True, False])
+                                              
+                                              # NOW YOU HAVE TWO PROBLEMS 
+                                              -> Index values are just data (storing data in multiple forms makes it harder to think about)
+                                              -> Indexes violate 'tidy data' prin
+                                              
+                                          
                                            
                                               
                                               
