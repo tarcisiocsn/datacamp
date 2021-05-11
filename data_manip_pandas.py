@@ -57,7 +57,8 @@ state             51 non-null object
 individuals       51 non-null float64
 family_members    51 non-null float64
 state_pop         51 non-null int64
-dtypes: float64(2), int64(1), object(2)
+
+types: float64(2), int64(1), object(2)
 memory usage: 2.4+ KB
 None
 
@@ -881,9 +882,487 @@ dogs.index -> dará output com que index começa start = 0, stop = 7, step = 1 .
                                               
                                               # NOW YOU HAVE TWO PROBLEMS 
                                               -> Index values are just data (storing data in multiple forms makes it harder to think about)
-                                              -> Indexes violate 'tidy data' prin
+                                              -> Indexes violate 'tidy data' principles (tidy data - where is stored in tabular form like a dataframe
+                                              #in pandas the syntax for working with indexes is different from the syntax for working with columns
+                                              -> you need to learn two syntaxes (by using two syntaxes, your code is more complicated, which can result in more bugs) 
+                                                                                         
+                                              # SETTINGS AND REMOVING INDEXES EXAMPLE
+                                                                                         
+# Look at temperatures
+print(temperatures)
+
+# Index temperatures by city
+temperatures_ind = temperatures.set_index('city')
+
+# Look at temperatures_ind
+print(temperatures_ind)
+
+# Reset the index, keeping its contents
+print(temperatures_ind.reset_index(drop = False))
+
+# Reset the index, dropping its contents
+print(temperatures_ind.reset_index(drop = True))
+                                             #OUTPUT
+                                                                                         
+            date     city        country  avg_temp_c
+0     2000-01-01  Abidjan  Côte D'Ivoire      27.293
+1     2000-02-01  Abidjan  Côte D'Ivoire      27.685
+2     2000-03-01  Abidjan  Côte D'Ivoire      29.061
+3     2000-04-01  Abidjan  Côte D'Ivoire      28.162
+4     2000-05-01  Abidjan  Côte D'Ivoire      27.547
+...          ...      ...            ...         ...
+16495 2013-05-01     Xian          China      18.979
+16496 2013-06-01     Xian          China      23.522
+16497 2013-07-01     Xian          China      25.251
+16498 2013-08-01     Xian          China      24.528
+16499 2013-09-01     Xian          China         NaN
+
+[16500 rows x 4 columns]
+              date        country  avg_temp_c
+city                                         
+Abidjan 2000-01-01  Côte D'Ivoire      27.293
+Abidjan 2000-02-01  Côte D'Ivoire      27.685
+Abidjan 2000-03-01  Côte D'Ivoire      29.061
+Abidjan 2000-04-01  Côte D'Ivoire      28.162
+Abidjan 2000-05-01  Côte D'Ivoire      27.547
+...            ...            ...         ...
+Xian    2013-05-01          China      18.979
+Xian    2013-06-01          China      23.522
+Xian    2013-07-01          China      25.251
+Xian    2013-08-01          China      24.528
+Xian    2013-09-01          China         NaN
+
+[16500 rows x 3 columns]
+          city       date        country  avg_temp_c
+0      Abidjan 2000-01-01  Côte D'Ivoire      27.293
+1      Abidjan 2000-02-01  Côte D'Ivoire      27.685
+2      Abidjan 2000-03-01  Côte D'Ivoire      29.061
+3      Abidjan 2000-04-01  Côte D'Ivoire      28.162
+4      Abidjan 2000-05-01  Côte D'Ivoire      27.547
+...        ...        ...            ...         ...
+16495     Xian 2013-05-01          China      18.979
+16496     Xian 2013-06-01          China      23.522
+16497     Xian 2013-07-01          China      25.251
+16498     Xian 2013-08-01          China      24.528
+16499     Xian 2013-09-01          China         NaN
+
+[16500 rows x 4 columns]
+            date        country  avg_temp_c
+0     2000-01-01  Côte D'Ivoire      27.293
+1     2000-02-01  Côte D'Ivoire      27.685
+2     2000-03-01  Côte D'Ivoire      29.061
+3     2000-04-01  Côte D'Ivoire      28.162
+4     2000-05-01  Côte D'Ivoire      27.547
+...          ...            ...         ...
+16495 2013-05-01          China      18.979
+16496 2013-06-01          China      23.522
+16497 2013-07-01          China      25.251
+16498 2013-08-01          China      24.528
+16499 2013-09-01          China         NaN
+
+[16500 rows x 3 columns]
+
+                                                                                         
+                                                               # SUBSETTING WITH .LOC[]
+# Make a list of cities to subset on
+cities = ["Moscow", "Saint Petersburg"]
+
+# Subset temperatures using square brackets
+print(temperatures[temperatures['city'].isin(cities)])
+
+# Subset temperatures_ind using .loc[]
+print(temperatures_ind.loc[cities]) -> MESMA COISA DA DE CIMA, MAS MAIS 'SIMPLES'
+                                                                #OUTPUT
+
+<script.py> output:
+                date    city country  avg_temp_c
+    10725 2000-01-01  Moscow  Russia      -7.313
+    10726 2000-02-01  Moscow  Russia      -3.551
+    10727 2000-03-01  Moscow  Russia      -1.661
+    10728 2000-04-01  Moscow  Russia      10.096
+    10729 2000-05-01  Moscow  Russia      10.357
+    ...          ...     ...     ...         ...
+    10885 2013-05-01  Moscow  Russia      16.152
+    10886 2013-06-01  Moscow  Russia      18.718
+    10887 2013-07-01  Moscow  Russia      18.136
+    10888 2013-08-01  Moscow  Russia      17.485
+    10889 2013-09-01  Moscow  Russia         NaN
+    
+    [165 rows x 4 columns]
+                          date country  avg_temp_c
+    city                                          
+    Moscow          2000-01-01  Russia      -7.313
+    Moscow          2000-02-01  Russia      -3.551
+    Moscow          2000-03-01  Russia      -1.661
+    Moscow          2000-04-01  Russia      10.096
+    Moscow          2000-05-01  Russia      10.357
+    ...                    ...     ...         ...
+    Moscow          2013-06-01  Russia      18.718
+    Moscow          2013-07-01  Russia      18.136
+    Moscow          2013-08-01  Russia      17.485
+    Moscow          2013-09-01  Russia         NaN
+    Saint Petesburg        NaT     NaN         NaN
+    
+    [166 rows x 3 columns]
+                                                        # SETTING MULTI-LEVEL INDEXES 
+# Index temperatures by country & city
+temperatures_ind = temperatures.set_index(['country', 'city'])
+
+# List of tuples: Brazil, Rio De Janeiro & Pakistan, Lahore
+rows_to_keep = [('Brazil','Rio De Janeiro'), ('Pakistan', 'Lahore')]
+
+# Subset for rows to keep
+print(temperatures_ind.loc[rows_to_keep])
+                                                                                         
+                                                                                         
+                                                      # SORTING BY INDEX VALUES
+# Sort temperatures_ind by index values
+print(temperatures_ind.sort_index())
+
+# Sort temperatures_ind by index values at the city level
+print(temperatures_ind.sort_index(level = ['city']))
+
+# Sort temperatures_ind by country then descending city
+print(temperatures_ind.sort_index(level = ['country', 'city'], ascending = [True, False]))                                                                                       
                                               
-                                          
-                                           
-                                              
-                                              
+                                                    # OUTPUT
+<script.py> output:
+                             date  avg_temp_c
+    country     city                         
+    Afghanistan Kabul  2000-01-01       3.326
+                Kabul  2000-02-01       3.454
+                Kabul  2000-03-01       9.612
+                Kabul  2000-04-01      17.925
+                Kabul  2000-05-01      24.658
+    ...                       ...         ...
+    Zimbabwe    Harare 2013-05-01      18.298
+                Harare 2013-06-01      17.020
+                Harare 2013-07-01      16.299
+                Harare 2013-08-01      19.232
+                Harare 2013-09-01         NaN
+    
+    [16500 rows x 2 columns]
+                                date  avg_temp_c
+    country       city                          
+    Côte D'Ivoire Abidjan 2000-01-01      27.293
+                  Abidjan 2000-02-01      27.685
+                  Abidjan 2000-03-01      29.061
+                  Abidjan 2000-04-01      28.162
+                  Abidjan 2000-05-01      27.547
+    ...                          ...         ...
+    China         Xian    2013-05-01      18.979
+                  Xian    2013-06-01      23.522
+                  Xian    2013-07-01      25.251
+                  Xian    2013-08-01      24.528
+                  Xian    2013-09-01         NaN
+    
+    [16500 rows x 2 columns]
+                             date  avg_temp_c
+    country     city                         
+    Afghanistan Kabul  2000-01-01       3.326
+                Kabul  2000-02-01       3.454
+                Kabul  2000-03-01       9.612
+                Kabul  2000-04-01      17.925
+                Kabul  2000-05-01      24.658
+    ...                       ...         ...
+    Zimbabwe    Harare 2013-05-01      18.298
+                Harare 2013-06-01      17.020
+                Harare 2013-07-01      16.299
+                Harare 2013-08-01      19.232
+                Harare 2013-09-01         NaN
+    
+    [16500 rows x 2 columns]
+                                                                                         
+                                                                 # CHAPTER 3 - 3.2 SLICING AND SUBSETTING WITH .LOC AND .ILOC 
+  # slicing is a technique for selecting consecutive elements from objects 
+                                                                 
+                                                                                         
+                                                                 # Slicing lists
+   breeds = ["Labrador", "Poodle", "Chow Chow", "Schnauzer", "Labrador", "Chihuahua", ...]] 
+   breeds[2:5] -> isso é o slice
+   #output -> ["Chow Chow", "Schnauzer", "Labrador"] 
+   breeds[:3] -> pegará do inicio da lista até index 2 chow chow, pq não inclui o 3
+   breeds[:] -> pegará toda a lista                                                                                      
+
+                                                                # Sort the index before you slice
+  you can slice DataFrames, but first, you need to sort the index. 
+  here, the dogs dataset has been given a multi-level index of breed and color; then, the index is sorted with sort_index
+   -> dogs_srt = dogs.set_index(["breed", "color"]).sort_index()
+                                                               
+                                                               # Slicing the outer index level -> ou seja, aquele que substituiu os números
+   To slice rows at the outer level of an index, you call loc, passing the first and last values separated by a colon 
+   dogs_srt.loc["Chow Chow" : "Poodle"] the final value "Poodle" is included (ou seja o valor final é incluido) 
+                                                                                         
+   the same technique does not work on inner index levels. 
+                                                               # Slicing the inner index levels badly -> ou seja, os demais values
+   nesse caso é diferente que o slicing the outer index 
+   se eu quiser fazer -> dogs_srt.loc["Tan" : "Grey"] -> dará erro, pq em dataframe não funciona o slicing por dentro, apenas o outer index
+   então:
+  the correct approach to slicing index levels is to pass the first and last positions as tuples
+  ->->-> o certo -> dogs_srt.loc[("Labrador", "Brown"]:("Schnauzer", "Grey")] -> first element here is a tuple of Labrador and brown, lembrar que o schnauzer está incluso
+                                  
+                                  
+                                                                 # Slicing Columns
+The simplest case involves subsetting columns but keeping all rows. 
+dogs_srt.loc[:,"name":"height_cm"]     -> mantem toda a linha usando :, e seleciona as colunas que quer ver
+                                  
+                                                                # Slice Twice -> you can slice on rows and columns at the same time: simply pass the appropriate slice to each argument
+dogs_srt.loc[("Labrador", "Brown"]:("Schnauzer", "Grey"), "name":"height_cm"]
+              
+                                  #An important use case of slicing is to subset DataFrames by range of dates
+              dogs = dogs.set_index("date_of_birth").sort_index() -> nesse caso vai ficar as datas no lugar da coluna dos index numeros
+                                  
+                                  # Slicing by dates -> depois de subset dates in index 
+              # get dogs with date_of_birth between 2014-08-25 and 2016-09-16
+              dogs.loc["2014-08-25" : "2016-09-16"]
+              
+                                  # Slicing by partial dates
+              # get dogs date_of_birth between 2014-01-01 and 2016-12-31 -> ou seja de 2014 até 2016
+              dogs.loc["2014":"2016"]
+              
+                                  # Subsetting by row/columnn number
+              print(dogs.iloc[2:5, 1:4] -> this uses a similar syntax to slicing lists, except that there are two arguments: one for rows and one for columns
+                    lemnrar que o ultimo depois do : não conta 
+                    
+                    
+                    
+                    
+                    
+                                  # EXAMPLES - SLICING INDEX VALUES
+                    
+#Instructions -> You can only slice an index if the index is sorted (using .sort_index()).
+# pandas is loaded as pd. temperatures_ind has country and city in the index, and is available.
+    Sort the index of temperatures_ind.
+    Use slicing with .loc[] to get these subsets:
+    from Pakistan to Russia.
+    from Lahore to Moscow. (This will return nonsense.)
+    from Pakistan, Lahore to Russia, Moscow.
+    
+# Resoluçao                    
+# Sort the index of temperatures_ind
+temperatures_srt = temperatures_ind.sort_index()
+
+# Subset rows from Pakistan to Russia
+print(temperatures_srt.loc["Pakistan" : "Russia"])
+
+# Try to subset rows from Lahore to Moscow
+print(temperatures_srt.loc["Lahore":"Moscow"])
+
+# Subset rows from Pakistan, Lahore to Russia, Moscow
+print(temperatures_srt.loc[("Pakistan, Lahore") : ("Russia", "Moscow")])  
+                     
+                                      # EXAMPLES - Slicing in both directions
+                    
+# Instructions -
+# pandas is loaded as pd. temperatures_srt is indexed by country and city, has a sorted index, and is available.
+ 
+    Use .loc[] slicing to subset rows from India, Hyderabad to Iraq, Baghdad.
+    Use .loc[] slicing to subset columns from date to avg_temp_c.
+    Slice in both directions at once from Hyderabad to Baghdad, and date to avg_temp_c.
+                    
+# Resolução
+                    
+# Subset rows from India, Hyderabad to Iraq, Baghdad
+print(temperatures_srt.loc[("India", "Hyderabad") : ("Iraq", "Baghdad")])
+
+# Subset columns from date to avg_temp_c
+print(temperatures_srt.loc[:, "date" : "avg_temp_c"])
+
+# Subset in both directions at once
+print(temperatures_srt.loc[("India", "Hyderabad") : ("Iraq", "Baghdad"), "date" : "avg_temp_c"])
+                    
+                    
+                                    # EXAMPLE - SLICING TIME SERIES
+Slicing is particularly useful for time series since it's a common thing to want to filter for data within a date range. Add the date column to the index, then use .loc[] to perform the subsetting. The important thing to remember is to keep your dates in ISO 8601 format, that is, yyyy-mm-dd.
+
+Recall from Chapter 1 that you can combine multiple Boolean conditions using logical operators (such as &). To do so in one line of code, you'll need to add parentheses () around each condition.
+#pandas is loaded as pd and temperatures, with no index, is available.
+
+# Instructions -
+
+    Use Boolean conditions (not .isin() or .loc[]) to subset for rows in 2010 and 2011, and print the results.
+    Note that because the date isn't set as an index, a condition that contains only a year, such as df["date"] == "2009", will check if the date is equal to the first day of the first month of the year (e.g. 2009-01-01), rather than checking whether the date occurs within the given year. We recommend writing out the full date when using Boolean conditions (e.g., 2009-12-31).
+    Set the index to the date column.
+    Use .loc[] to subset for rows in 2010 and 2011.
+    Use .loc[] to subset for rows from Aug 2010 to Feb 2011.
+                    
+# Resolução
+                    
+# Use Boolean conditions to subset temperatures for rows in 2010 and 2011
+temperatures_bool = temperatures[(temperatures["date"] >= "2010-01-01") & (temperatures["date"] <= "2011-12-31")]
+
+print(temperatures_bool)
+
+# Set date as an index and sort the index
+temperatures_ind = temperatures.set_index("date").sort_index()
+
+# Use .loc[] to subset temperatures_ind for rows in 2010 and 2011
+print(temperatures_ind.loc["2010":"2011"])
+
+# Use .loc[] to subset temperatures_ind for rows from Aug 2010 to Feb 2011
+print(temperatures_ind.loc["2010-08-01":"2011-02-01"])    
+                    
+                                                    # CHAPTER 03 - 2.3 WORKING WITH PIVOT TABLE
+  # pIVOTING THE DOG PACK
+                    dogs_height_by_breed_vs_color = dog_pack_pivot_table("height_cm", index = "breed", columns = "color")
+                    print(dogs_height_by_breed_vs_color)
+  # the first argument is the column name containing values to aggregate
+  # the index argument lists the columns to group by and display in rows
+  # and the columns argument list the columns to group by and display in columns
+                    #default function it's mean
+ -> dará um dataframe que as linhas são as raças  e as colunas são as cores, e os valores dessas colunas terá as alturas
+                    tipo:
+                    color       black         brown       gray        tan          white
+                    breed       
+                    beagle      34.500        36.500      36.311      35.700        38.891
+                    boxer       57.345        63.500      58.900      62.3200       56.400
+                    st. bernard  ....          .....         ...     ....          .....           
+                    chihuahua     ....          .....         ...    ....          .....         
+                    chow chow     ....          .....         ...
+                    labrador      ....          .....         ...     ....          .....         
+                    .
+                    .
+                    .
+                    
+                    
+# pivot tables are just DataFrame with sorted indexes -> that means that all the fun stuff you've learned so far this chapter can be used on them.            
+                                                # .loc[] + slicing is a power combo
+                    
+                    
+                    # in particular, the loc[] and slicing combination is ideal for subseting pivot tables, like so.
+                    dogs_heigh_by_breed_vs_color_.loc["chow chow" : "poodle"] -> slicing the dataframe acima que usamos o pivot table
+                    
+                                                # the axis argument
+                    dogs_heigh_by_breed_vs_color_.mean(axis = "index")
+                    # the methods for calculating summary statistics on a dataframe, such as mean, have an axis argument
+                    # the default valus is "index" which means "calculate the statistic across rows" -> then here, the mean is calculate for each color, that is across the breeds
+                    
+                    #to calculate the summary statistic for each row, that is, "across the columns", you set the axis to columns
+                      dogs_heigh_by_breed_vs_color_.mean(axis = "columns") -> here the mean heigh calculated for each breed, that means across the colors
+                    
+                                                                        
+                    
+                                                                # EXAMPLE - PIVOTING TEMPERATURE  BY CITY  AND YEAR
+    
+
+It's interesting to see how temperatures for each city change over time—looking at every month results in a big table, which can be tricky to reason about. Instead, let's look at how temperatures change by year.
+
+You can access the components of a date (year, month and day) using code of the form dataframe["column"].dt.component. For example, the month component is dataframe["column"].dt.month, and the year component is dataframe["column"].dt.year.
+
+Once you have the year column, you can create a pivot table with the data aggregated by city and year, which you'll explore in the coming exercises.
+
+pandas is loaded as pd. temperatures is available.
+                    
+                    
+# INSTRUCTIONS
+                    
+    Add a year column to temperatures, from the year component of the date column.
+    Make a pivot table of the avg_temp_c column, with country and city as rows, and year as columns. Assign to temp_by_country_city_vs_year, and look at the result.
+                    
+                    
+# RESOLUÇÃO
+# Add a year column to temperatures
+temperatures["year"] = temperatures["date"].dt.year
+
+# Pivot avg_temp_c by country and city vs year
+temp_by_country_city_vs_year = temperatures.pivot_table("avg_temp_c", index = ["country", "city"], columns = "year")
+
+# See the result
+print(temp_by_country_city_vs_year)
+                    
+                    #OUTPUT
+                    # Add a year column to temperatures
+temperatures["year"] = temperatures["date"].dt.year
+
+# Pivot avg_temp_c by country and city vs year
+temp_by_country_city_vs_year = temperatures.pivot_table("avg_temp_c", index = ["country", "city"], columns = "year")
+
+# See the result
+print(temp_by_country_city_vs_year)
+                    
+#OUTPUT
+year                              2000    2001    2002    2003    2004  ...    2009    2010    2011    2012    2013
+country       city                                                      ...                                        
+Afghanistan   Kabul             15.823  15.848  15.715  15.133  16.128  ...  15.093  15.676  15.812  14.510  16.206
+Angola        Luanda            24.410  24.427  24.791  24.867  24.216  ...  24.325  24.440  24.151  24.240  24.554
+Australia     Melbourne         14.320  14.180  14.076  13.986  13.742  ...  14.647  14.232  14.191  14.269  14.742
+              Sydney            17.567  17.855  17.734  17.592  17.870  ...  18.176  17.999  17.713  17.474  18.090
+Bangladesh    Dhaka             25.905  25.931  26.095  25.927  26.136  ...  26.536  26.648  25.803  26.284  26.587
+...                                ...     ...     ...     ...     ...  ...     ...     ...     ...     ...     ...
+United States Chicago           11.090  11.703  11.532  10.482  10.943  ...  10.298  11.816  11.214  12.821  11.587
+              Los Angeles       16.643  16.466  16.430  16.945  16.553  ...  16.677  15.887  15.875  17.090  18.121
+              New York           9.969  10.931  11.252   9.836  10.389  ...  10.142  11.358  11.272  11.972  12.164
+Vietnam       Ho Chi Minh City  27.589  27.832  28.065  27.828  27.687  ...  27.853  28.282  27.675  28.249  28.455
+Zimbabwe      Harare            20.284  20.861  21.079  20.889  20.308  ...  20.524  21.166  20.782  20.523  19.756    
+                    
+                    
+                    
+                    
+                                                                # EXAMPLE - SUBSETTING PIVOT TABLES
+# INSTRUCTIONS
+Use .loc[] on temp_by_country_city_vs_year to take subsets.
+
+    From Egypt to India.
+    From Egypt, Cairo to India, Delhi.
+    From Egypt, Cairo to India, Delhi, and 2005 to 2010.
+                    
+                    
+# RESOLUÇÃO
+# Subset for Egypt to India
+temp_by_country_city_vs_year.loc["Egypt" : "India"]
+
+# Subset for Egypt, Cairo to India, Delhi
+temp_by_country_city_vs_year.loc[("Egypt", "Cairo") : ("India", "Delhi")]
+
+# Subset in both directions at once
+temp_by_country_city_vs_year.loc[("Egypt", "Cairo") : ("India", "Delhi"), "2005":"2010"]
+                    
+                    
+ # OUTPUT
+ year                    2005    2006    2007    2008    2009    2010
+country  city                                                       
+Egypt    Cairo        22.006  22.050  22.361  22.644  22.625  23.718
+         Gizeh        22.006  22.050  22.361  22.644  22.625  23.718
+Ethiopia Addis Abeba  18.313  18.427  18.143  18.165  18.765  18.298
+France   Paris        11.553  11.788  11.751  11.278  11.464  10.410
+Germany  Berlin        9.919  10.545  10.883  10.658  10.062   8.607
+India    Ahmadabad    26.828  27.283  27.511  27.049  28.096  28.018
+         Bangalore    25.476  25.418  25.464  25.353  25.726  25.705
+         Bombay       27.036  27.381  27.635  27.178  27.845  27.765
+         Calcutta     26.729  26.986  26.585  26.522  27.153  27.289
+         Delhi        25.716  26.366  26.146  25.675  26.554  26.520                   
+                                                                                # EXAMPLE - CALCULATING ON A PIVOT TABLE
+Pivot tables are filled with summary statistics, but they are only a first step to finding something insightful. Often you'll need to perform further calculations on them. A common thing to do is to find the rows or columns where the highest or lowest value occurs.
+
+Recall from Chapter 1 that you can easily subset a Series or DataFrame to find rows of interest using a logical condition inside of square brackets. For example: series[series > value].
+
+pandas is loaded as pd and the DataFrame temp_by_country_city_vs_year is available
+                    
+ # INSTRUCTION
+                    
+    Calculate the mean temperature for each year, assigning to mean_temp_by_year.
+    Filter mean_temp_by_year for the year that had the highest mean temperature.
+    Calculate the mean temperature for each city (across columns), assigning to mean_temp_by_city.
+    Filter mean_temp_by_city for the city that had the lowest mean temperature.
+# RESOLUÇÃO
+# Get the worldwide mean temp by year
+mean_temp_by_year = temp_by_country_city_vs_year.mean()
+
+# Filter for the year that had the highest mean temp
+print(mean_temp_by_year[mean_temp_by_year == mean_temp_by_year.max()])
+
+# Get the mean temp by city
+mean_temp_by_city = temp_by_country_city_vs_year.mean(axis = "columns")
+
+# Filter for the city that had the lowest mean temp
+print(mean_temp_by_city[mean_temp_by_city == mean_temp_by_city.min()])
+                    
+                    # OUTPUT
+    <script.py> output:
+    year
+    2013    20.312
+    dtype: float64
+    country  city  
+    China    Harbin    4.877
+    dtype: float64
+                    
