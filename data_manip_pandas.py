@@ -1366,3 +1366,319 @@ print(mean_temp_by_city[mean_temp_by_city == mean_temp_by_city.min()])
     China    Harbin    4.877
     dtype: float64
                     
+                    --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                     
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                        
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                    
+                    
+                    
+                    
+                    # CHAPTER 4 - CREATING AND VISUALIZING DATA 
+                    
+                    import matplotlib.pyplot as plt
+                    
+                    # HISTOGRAM 
+                    dogs_pack["height_cm"].hist()
+                    plt.show()
+                    x-axis  represents the hights of the dogs, and y-axis represents the number of the dogs in each height range
+                    # nesse histogram de cima  there are lot of dogs around 50 to 60 cm tall
+                    dogs_pack["height_cm"].hist(bins = 20) por exemplo
+                     # we can adjust the number of bars, or bins, using the "bins" argument.
+                    
+                    # BAR PLOTS -> Can revel relationships between a categorical variable and a numeric variable, like breed and weight
+                    -> para isso preciso agrupar
+                    avg_weight_by_breed = dog_pack.groupby("breed")["weight_kg"].mean()
+                    depois é so print()
+                    # now we can create a bar plot from the mean weights using the plot method , setting "kind" equal to "bar"
+                    avg_weight_by_breed.plot(kind = "bar")
+                    plt.show()
+                    # add a title
+                    avg_weight_by_breed.plot(kind = "bar", title = "Mean weight by dog breed")
+                    
+                    # LINE PLOT -> they are great for visualizing changes in numeric variables over time
+                    #exemplo basico
+                   um labrador é medido  o seu peso todo mes pelo seu dono -> DataFrame "sully"
+                    sully.head() -> pegar apenas os primeiros valores do dataframe
+                    sully.plot(x = "date", y="weight_kg", kind = "line")
+                    plt.show()
+                    #rotate axis labels -> para ficar mais file de ler
+                    sully.plot(x = "date", y="weight_kg", kind = "line", rot = 45)
+                    
+                    # SCATTER PLOTS -> they are great for visualizing relationships between two numeric variables
+                    to plot each dog's hight versus their weight' we call the plot method. 
+                    sully.plot(x = "height_cm", y="weight_kg", kind = "scatter")
+                    plt.show()
+                    
+                    # LAYERING PLOTS -> SOBREPOSICAO DE HISTOGRAMS
+                    dog_pack[dog_pack["sex"] == 'F"]["height_cm].hist()
+                    dog_pack[dog_pack["sex"] == 'F"]["height_cm].hist()
+                    plt.legend(["F", "M"])         
+                    plt.show()
+                    dará um grafico sobreposto, mas precisamos identifiar quem é quem, pq não podemos mudar a cor deles, POR ISSO O PLT.LEGEND        
+                   
+                             
+                    # TRANSPARENCY
+                     dog_pack[dog_pack["sex"] == 'F"]["height_cm].hist(alpha = 0.7)
+                    dog_pack[dog_pack["sex"] == 'F"]["height_cm].hist(alpha = 0.7)   
+                             
+                             # EXAMPLE 
+                             # INSTRUCTIONS
+Bar plots are great for revealing relationships between categorical (size) and numeric (number sold) variables, but you'll often have to manipulate your data first in order to get the numbers you need for plotting. 
+    Print the head of the avocados dataset. What columns are available?
+    For each avocado size group, calculate the total number sold, storing as nb_sold_by_size.
+    Create a bar plot of the number of avocados sold by size.
+    Show the plot.
+                    
+# Import matplotlib.pyplot with alias plt
+import matplotlib.pyplot as plt
+
+# Look at the first few rows of data
+print(avocados.head())
+
+# Get the total number of avocados sold of each size
+nb_sold_by_size = avocados.groupby("size")["nb_sold"].sum()
+
+# Create a bar plot of the number of avocados sold by size
+nb_sold_by_size.plot(kind = "bar")
+
+# Show the plot
+plt.show()
+                             
+                             
+                             # EXAMPLE - CHANGES IN SALES OVER TIME
+
+
+Line plots are designed to visualize the relationship between two numeric variables, where each data values is connected to the next one. They are especially useful for visualizing the change in a number over time since each time point is naturally connected to the next time point. In this exercise, you'll visualize the change in avocado sales over three years.
+
+pandas has been imported as pd.
+                             
+                             # INSTRUCTIONS
+
+    Get the total number of avocados sold on each date. The DataFrame has two rows for each date -- one for organic, and one for conventional. Save this as nb_sold_by_date.
+    Create a line plot of the number of avocados sold.
+    Show the plot.
+
+                             # RESOLUTIONS
+                             # Import matplotlib.pyplot with alias plt
+import matplotlib.pyplot as plt
+
+# Get the total number of avocados sold on each date
+nb_sold_by_date = avocados.groupby("date")["nb_sold"].sum()
+
+# Create a line plot of the number of avocados sold by date
+nb_sold_by_date.plot(kind = "line")
+
+# Show the plot
+plt.show()
+                             # EXAMPLE
+catter plots are ideal for visualizing relationships between numerical variables. In this exercise, you'll compare the number of avocados sold to average price and see if they're at all related. If they're related, you may be able to use one number to predict the other.
+
+matplotlib.pyplot has been imported as plt and pandas has been imported as pd.
+                             
+                             # INSTRUCTIONS
+
+    Create a scatter plot with nb_sold on the x-axis and avg_price on the y-axis. Title it "Number of avocados sold vs. average price".
+    Show the plot.
+
+                             # RESOLUTION
+     # Scatter plot of nb_sold vs avg_price with title
+avocados.plot(x = "nb_sold", y = "avg_price", kind = "scatter", title = "Number of avocados sold vs. average price")
+
+# Show the plot
+plt.show()
+                             
+                             # EXAMPLE
+
+
+Creating multiple plots for different subsets of data allows you to compare groups. In this exercise, you'll create multiple histograms to compare the prices of conventional and organic avocados.
+
+matplotlib.pyplot has been imported as plt and pandas has been imported as pd.
+                             
+                             # INSTRUCTIONS
+
+    Subset avocados for the conventional type, and the average price column. Create a histogram.
+    Create a histogram of avg_price for organic type avocados.
+    Add a legend to your plot, with the names "conventional" and "organic".
+    Show your plot.
+
+                             # RESOLUTION
+# Histogram of conventional avg_price 
+avocados[avocados["type"]=="conventional"]["avg_price"].hist()
+
+# Histogram of organic avg_price
+avocados[avocados["type"]=="organic"]["avg_price"].hist()
+
+# Add a legend
+plt.legend(["conventional", "organic"])
+
+# Show the plot
+plt.show()
+                             
+                             
+                             
+  # CONTINUAÇÃO                           
+Modify your code to adjust the transparency of both histograms to 0.5 to see how much overlap there is between the two distributions.
+# Modify histogram transparency to 0.5 
+avocados[avocados["type"] == "conventional"]["avg_price"].hist(alpha = 0.5)
+
+# Modify histogram transparency to 0.5
+avocados[avocados["type"] == "organic"]["avg_price"].hist(alpha = 0.5)
+
+# Add a legend
+plt.legend(["conventional", "organic"])
+
+# Show the plot
+plt.show()
+                    
+                    # 4.2 MISSING VALUES -> YOU COULD BE GIVEN THAT HAS MISSING VALUES, SO IT'S IMPORTANT TO KNOW HOW TO HANDLE THEM 
+                    # MOST DATA IS NOT PERFECT - THERE'S ALWAYS A POSSIBLITY THAT THERE ARE SOME PIECES MISSING FROM YOUR DATASET
+                    # imagina em algum dia o medidor de peso não está funcionando e vc não consegue medir o peso de 2 cachorros
+                    in a pandas dataframe, missing values are indicated with N-a-N, wich stands for 'not a number'
+                    
+                    # DETECTING MISSING VALUES 
+                    dogs.isna() -> we get a boolean for every single indicating whether the value is missing or not, but this isn't very helpful when you're working with a lot of data
+                    # DETECTING ANY MISSING VALUES
+                    dogs.isna().any() -> we get one value for each variable that tells us if there are missing values in that column
+                    # COUNTING MISSING VALUES
+                    dogs.isna().sum() -> pega a soma dos true, ou seja, daqueles que estão faltando algo 
+                    
+                    
+                    # PLOTING MISSING VALUES -> we can use this to visualize the missing values in the dataset using a bar plot
+                    import matplotlib.pyplot as plt
+                    dogs.isna().sum().plot(kind = "bar")
+                    plt.show()
+                    lembra de colocar alpha para sobrepor 
+                    
+                    # REMOVING MISSING VALUES -> remove the rows in the dataframe that contain missing values
+                    dogs.dropna()
+                    # but this may not be ideal if you have a lot of missing data, since that means losing a lot of observations
+                    
+                    # REPLACING MISSING VALUES
+                    dogs.fillna(0) -> tira o NaN e coloca o 0
+                    
+                   
+                    # EXAMPLE - FINDING MISSING VALUES
+                    
+    # Import matplotlib.pyplot with alias plt
+import matplotlib.pyplot as plt
+
+# Check individual values for missing values
+print(avocados_2016.isna())
+
+# Check each column for missing values
+print(avocados_2016.isna().any())
+
+# Bar plot of missing values by variable
+avocados_2016.isna().sum().plot(kind = "bar")
+
+# Show plot
+plt.show()
+                    #OUTPUT
+     date  avg_price  total_sold  small_sold  large_sold  xl_sold  total_bags_sold  small_bags_sold  large_bags_sold  xl_bags_sold
+0   False      False       False       False       False    False            False            False            False         False
+1   False      False       False       False       False    False            False            False            False         False
+2   False      False       False       False        True    False            False            False            False         False
+3   False      False       False       False       False    False            False            False            False         False
+4   False      False       False       False       False     True            False            False            False         False
+5   False      False       False        True       False    False            False            False            False         False
+6   False      False       False       False       False    False            False            False            False         False
+7   False      False       False       False        True    False            False            False            False         False
+8   False      False       False       False       False    False            False            False            False         False
+9   False      False       False       False       False    False            False            False            False         False
+10  False      False       False       False        True    False            False            False            False         False
+11  False      False       False       False       False    False            False            False            False         False
+12  False      False       False       False       False    False            False            False            False         False
+13  False      False       False       False       False    False            False            False            False         False
+14  False      False       False       False       False    False            False            False            False         False
+15  False      False       False       False        True    False            False            False            False         False
+16  False      False       False       False       False     True            False            False            False         False
+17  False      False       False       False       False    False            False            False            False         False
+18  False      False       False       False       False    False            False            False            False         False
+19  False      False       False       False        True    False            False            False            False         False
+20  False      False       False       False       False    False            False            False            False         False
+21  False      False       False       False       False    False            False            False            False         False
+22  False      False       False       False       False    False            False            False            False         False
+23  False      False       False       False       False    False            False            False            False         False
+24  False      False       False       False       False    False            False            False            False         False
+25  False      False       False       False       False    False            False            False            False         False
+26  False      False       False       False       False    False            False            False            False         False
+27  False      False       False       False       False    False            False            False            False         False
+28  False      False       False       False       False    False            False            False            False         False
+29  False      False       False       False       False    False            False            False            False         False
+30  False      False       False       False       False     True            False            False            False         False
+31  False      False       False       False       False    False            False            False            False         False
+32  False      False       False       False       False     True            False            False            False         False
+33  False      False       False       False       False    False            False            False            False         False
+34  False      False       False       False       False    False            False            False            False         False
+35  False      False       False       False       False    False            False            False            False         False
+36  False      False       False        True       False    False            False            False            False         False
+37  False      False       False       False        True    False            False            False            False         False
+38  False      False       False       False       False    False            False            False            False         False
+39  False      False       False       False       False    False            False            False            False         False
+40  False      False       False        True       False    False            False            False            False         False
+41  False      False       False       False       False    False            False            False            False         False
+42  False      False       False       False       False    False            False            False            False         False
+43  False      False       False       False       False    False            False            False            False         False
+44  False      False       False        True       False    False            False            False            False         False
+45  False      False       False       False       False    False            False            False            False         False
+46  False      False       False       False       False    False            False            False            False         False
+47  False      False       False       False       False    False            False            False            False         False
+48  False      False       False       False       False    False            False            False            False         False
+49  False      False       False       False       False    False            False            False            False         False
+50  False      False       False        True       False    False            False            False            False         False
+51  False      False       False        True       False    False            False            False            False         False
+date               False
+avg_price          False
+total_sold         False
+small_sold          True
+large_sold          True
+xl_sold             True
+total_bags_sold    False
+small_bags_sold    False
+large_bags_sold    False
+xl_bags_sold       False
+dtype: bool
+                    VAI TER TBM A PARTE DO PLOT, MAS É DE BOA 
+                    
+                    
+                    # REMOVING MISSING VALUES
+  # INSTRUCTIONS
+                    
+    Remove the rows of avocados_2016 that contain missing values and store the remaining rows in avocados_complete.
+    Verify that all missing values have been removed from avocados_complete. Calculate each column that has NAs and print.
+
+                    #EXECUTION
+                    
+# Remove rows with missing values
+avocados_complete = avocados_2016.dropna()
+
+# Check if any columns contain missing values
+print(avocados_complete.isna().any())  
+                    # OUTPUT
+date               False
+avg_price          False
+total_sold         False
+small_sold         False
+large_sold         False
+xl_sold            False
+total_bags_sold    False
+small_bags_sold    False
+large_bags_sold    False
+xl_bags_sold       False
+dtype: bool
+                    
