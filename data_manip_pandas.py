@@ -1610,38 +1610,11 @@ plt.show()
 17  False      False       False       False       False    False            False            False            False         False
 18  False      False       False       False       False    False            False            False            False         False
 19  False      False       False       False        True    False            False            False            False         False
-20  False      False       False       False       False    False            False            False            False         False
-21  False      False       False       False       False    False            False            False            False         False
-22  False      False       False       False       False    False            False            False            False         False
-23  False      False       False       False       False    False            False            False            False         False
-24  False      False       False       False       False    False            False            False            False         False
-25  False      False       False       False       False    False            False            False            False         False
-26  False      False       False       False       False    False            False            False            False         False
-27  False      False       False       False       False    False            False            False            False         False
-28  False      False       False       False       False    False            False            False            False         False
-29  False      False       False       False       False    False            False            False            False         False
-30  False      False       False       False       False     True            False            False            False         False
-31  False      False       False       False       False    False            False            False            False         False
-32  False      False       False       False       False     True            False            False            False         False
-33  False      False       False       False       False    False            False            False            False         False
-34  False      False       False       False       False    False            False            False            False         False
-35  False      False       False       False       False    False            False            False            False         False
-36  False      False       False        True       False    False            False            False            False         False
-37  False      False       False       False        True    False            False            False            False         False
-38  False      False       False       False       False    False            False            False            False         False
-39  False      False       False       False       False    False            False            False            False         False
-40  False      False       False        True       False    False            False            False            False         False
-41  False      False       False       False       False    False            False            False            False         False
-42  False      False       False       False       False    False            False            False            False         False
-43  False      False       False       False       False    False            False            False            False         False
-44  False      False       False        True       False    False            False            False            False         False
-45  False      False       False       False       False    False            False            False            False         False
-46  False      False       False       False       False    False            False            False            False         False
-47  False      False       False       False       False    False            False            False            False         False
-48  False      False       False       False       False    False            False            False            False         False
-49  False      False       False       False       False    False            False            False            False         False
-50  False      False       False        True       False    False            False            False            False         False
-51  False      False       False        True       False    False            False            False            False         False
+.
+                             .
+                             .
+                             .
+                             . 
 date               False
 avg_price          False
 total_sold         False
@@ -1682,3 +1655,245 @@ large_bags_sold    False
 xl_bags_sold       False
 dtype: bool
                     
+                            # 4.3 CREATING A DATAFRAME
+                             
+                             # DICTIONARIES
+                             A dictionary is a way of storing data in Python. It holds a set of key-values pairs -> using curley braces {} 
+                             
+                             my_dict= {"key1":value1, "key2":value2, "key3":value3}
+                             my_dict["key1"] 
+                             output -> value1
+                             
+                             my_dict= {"title":"Charlotte's web", "author":"E.B. White", "published":1952}
+                             my_dict["title"]
+                             output -> "Charlotte's web"
+                             
+                             # CREATING DATAFRAMES -> TEM VARIOS METODOS DE CRIAR DATAFRAMES
+                             From a list of dictionaries -> DataFram is buit up row by row
+                             From a dictionary of lists -> Dataframe is built up column by column
+                             
+                             # List of dictionaries - by row -> each key on the left of each colon, will become a column name
+                             list_of_dicts = [ {"name": "Ginger", "breed": "Dachshund", "height_cm": 22,"weight_kg": 10, "date_of_birth": "2019-03-14"},    {"name": "Scout", "breed": "Dalmatian", "height_cm": 59, "weight_kg": 25, "date_of_birth": "2019-05-09"}]
+                             new_dogs = pd.DataFrame(list_of_dicts)
+                             print(new_dogs)
+                             #output
+                             name      breed  height_cm  weight_kg date_of_birth
+                         0  Ginger  Dachshund         22         10    2019-03-14
+                         1   Scout  Dalmatian         59         25    2019-05-09
+                             
+                             # Dictionaries of lists - by column
+                             key - column name
+                             value - list of column values
+                             dict_of_lists = {"name": ["Ginger", "Scout"],"breed": ["Dachshund", "Dalmatian"],"height_cm": [22, 59],"weight_kg": [10, 25],"date_of_birth": ["2019-03-14", "2019-05-09"]}new_dogs = pd.DataFrame(dict_of_lists)
+                             new_dogs = pd.DataFrame(dict_of_lists)
+                             print(new_dogs)
+                             #output
+                             name      breed  height_cm  weight_kg date_of_birth
+                         0  Ginger  Dachshund         22         10    2019-03-14
+                         1   Scout  Dalmatian         59         25    2019-05-09
+                             
+                             
+                             # EXAMPLE - list of dictionaries
+                             
+# Create a list of dictionaries with new data
+avocados_list = [
+    {"date":"2019-11-03" , "small_sold": 10376832, "large_sold": 7835071},
+    {"date":"2019-11-10" , "small_sold": 10717154, "large_sold":8561348 },
+]
+
+# Convert list into DataFrame
+avocados_2019 = pd.DataFrame(avocados_list)
+
+# Print the new DataFrame
+print(avocados_2019)
+                             
+                             # OUTPUT
+         date  small_sold  large_sold
+0  2019-11-03    10376832     7835071
+1  2019-11-10    10717154     8561348    
+                             
+                             
+                             # EXAMPLE -> LIST OF DICTIONARIES
+# Create a list of dictionaries with new data
+avocados_list = [
+    {"date":"2019-11-03" , "small_sold": 10376832, "large_sold": 7835071},
+    {"date":"2019-11-10" , "small_sold": 10717154, "large_sold":8561348 },
+]
+
+# Convert list into DataFrame
+avocados_2019 = pd.DataFrame(avocados_list)
+
+# Print the new DataFrame
+print(avocados_2019)
+                             # OUTPUT
+   date  small_sold  large_sold
+0  2019-11-03    10376832     7835071
+1  2019-11-10    10717154     8561348    
+                             
+                             
+                             
+                             
+                             # READING AND WRITING CSVs -> commma separated values
+                             - designed for DataFrame-like data
+                             each row of data has its own line, and each value is separated by a comma
+                             - most database and spreadsheet programs can use them or create them
+                             -> é interessante, pq voce pode compartilhar para outras pessoas os dados, pq pode ser transformado em planilha, dataframe e etc..
+                             
+                             # example csv file 
+                             new_dog.csv
+                             name,breed,height_cm,weight_kg,d_o_b
+                             Ginger,Dachshund,22,10,2019-03-14
+                             Scout,Dalmatian,59,25,2019-05-09
+                             
+                             # we can put this data in a DataFrame using the handy pandas
+                             import pandas as pd
+                             new_dogs = pd.read_csv("new_dog.csv")
+                             print(new_dog)
+                             
+                              # OUTPUT
+   date  small_sold  large_sold
+0  2019-11-03    10376832     7835071
+1  2019-11-10    10717154     8561348  
+                             
+                             # DATAFRAME MANUPULATION
+                             add uma coluna
+                             new_dogs["bmi"] = new_dogs["weight_kg"] / (new_dogs["height_cm"] / 100) ** 2
+                             
+                             name      breed  height_cm  weight_kg date_of_birth         bmi
+                          0  Ginger  Dachshund         22         10    2019-03-14  206.611570
+                          1   Scout  Dalmatian         59         25    2019-05-09   71.818443
+                             
+                             
+                             #DATAFRAME TO CSV
+                             new_dogs.to_csv("new_dogs_with_bmi.csv") -> underscore é underline
+                             
+                             name,breed,height_cm,weight_kg,d_o_b,bmiG
+                             inger,Dachshund,22,10,2019-03-14,206.611570
+                             Scout,Dalmatian,59,25,2019-05-09,71.818443
+                             
+                             # EXAMPLE - CSV TO DATAFRAME
+# Read CSV as DataFrame called airline_bumping
+airline_bumping = pd.read_csv("airline_bumping.csv")
+
+# Take a look at the DataFrame
+print(airline_bumping)
+                             
+                             # OUTPUT
+                             
+                airline  year  nb_bumped  total_passengers
+0       DELTA AIR LINES  2017        679          99796155
+1        VIRGIN AMERICA  2017        165           6090029
+2       JETBLUE AIRWAYS  2017       1475          27255038
+3       UNITED AIRLINES  2017       2067          70030765
+4     HAWAIIAN AIRLINES  2017         92           8422734
+5   EXPRESSJET AIRLINES  2017        785          11738812
+6      SKYWEST AIRLINES  2017        917          24516354
+7     AMERICAN AIRLINES  2017       4517          98017132
+8       ALASKA AIRLINES  2017        658          18817924
+9    SOUTHWEST AIRLINES  2017       6678         115988988
+10    FRONTIER AIRLINES  2017        540          12059943
+11      SPIRIT AIRLINES  2017       1502          17069647
+12      DELTA AIR LINES  2016        912          97237060
+13       VIRGIN AMERICA  2016         77           5927938
+14      JETBLUE AIRWAYS  2016       2140          25990828
+15      UNITED AIRLINES  2016       2874          64438132
+16    HAWAIIAN AIRLINES  2016         30           8154838
+17  EXPRESSJET AIRLINES  2016       2541          16119866
+18     SKYWEST AIRLINES  2016       2177          22575383
+19    AMERICAN AIRLINES  2016       6598          99348093
+20      ALASKA AIRLINES  2016        734          17725197
+21   SOUTHWEST AIRLINES  2016      11907         112153048
+22    FRONTIER AIRLINES  2016        688          10895052
+23      SPIRIT AIRLINES  2016       1418          15234924                             
+                             
+                             
+                             
+                             # EXAMPLE CSV TO DATAFRAME
+# From previous step
+airline_bumping = pd.read_csv("airline_bumping.csv")
+print(airline_bumping.head())
+
+# For each airline, select nb_bumped and total_passengers and sum
+airline_totals = airline_bumping.groupby("airline")[["nb_bumped","total_passengers"]].sum()
+                             print(airline_totals)
+                             
+                             # OUTPUT
+             airline  year  nb_bumped  total_passengers
+0    DELTA AIR LINES  2017        679          99796155
+1     VIRGIN AMERICA  2017        165           6090029
+2    JETBLUE AIRWAYS  2017       1475          27255038
+3    UNITED AIRLINES  2017       2067          70030765
+4  HAWAIIAN AIRLINES  2017         92           8422734
+                             
+                     nb_bumped  total_passengers
+airline                                         
+ALASKA AIRLINES           1392          36543121
+AMERICAN AIRLINES        11115         197365225
+DELTA AIR LINES           1591         197033215
+EXPRESSJET AIRLINES       3326          27858678
+FRONTIER AIRLINES         1228          22954995
+HAWAIIAN AIRLINES          122          16577572
+JETBLUE AIRWAYS           3615          53245866
+SKYWEST AIRLINES          3094          47091737
+SOUTHWEST AIRLINES       18585         228142036
+SPIRIT AIRLINES           2920          32304571
+UNITED AIRLINES           4941         134468897
+VIRGIN AMERICA             242          12017967                             
+                             
+                             # EXAMPLE
+Create a new column of airline_totals called bumps_per_10k, which is the number of passengers bumped per 10,000 passengers in 2016 and 2017.
+                             
+                             
+ # Create new col, bumps_per_10k: no. of bumps per 10k passengers for each airline
+airline_totals["bumps_per_10k"] = airline_totals["nb_bumped"] / airline_totals["total_passengers"] * 10000
+ print(airline_totals)
+                           # OUTPUT
+                             
+                     nb_bumped  total_passengers  bumps_per_10k
+airline                                                        
+ALASKA AIRLINES           1392          36543121          0.381
+AMERICAN AIRLINES        11115         197365225          0.563
+DELTA AIR LINES           1591         197033215          0.081
+EXPRESSJET AIRLINES       3326          27858678          1.194
+FRONTIER AIRLINES         1228          22954995          0.535
+HAWAIIAN AIRLINES          122          16577572          0.074
+JETBLUE AIRWAYS           3615          53245866          0.679
+SKYWEST AIRLINES          3094          47091737          0.657
+SOUTHWEST AIRLINES       18585         228142036          0.815
+SPIRIT AIRLINES           2920          32304571          0.904
+UNITED AIRLINES           4941         134468897          0.367
+VIRGIN AMERICA             242          12017967          0.201                            
+                             
+                             
+                             # EXAMPLE DATAFRAME TO CSV
+# Create airline_totals_sorted
+airline_totals_sorted = airline_totals.sort_values("bumps_per_10k", ascending = False)
+
+# Print airline_totals_sorted
+print(airline_totals_sorted)
+
+# Save as airline_totals_sorted.csv
+airline_totals_sorted.to_csv("airline_totals_sorted.csv")                             
+                             
+ 
+                             # OUTPUT
+                             
+                          nb_bumped  total_passengers  bumps_per_10k
+    airline                                                        
+    EXPRESSJET AIRLINES       3326          27858678          1.194
+    SPIRIT AIRLINES           2920          32304571          0.904
+    SOUTHWEST AIRLINES       18585         228142036          0.815
+    JETBLUE AIRWAYS           3615          53245866          0.679
+    SKYWEST AIRLINES          3094          47091737          0.657
+    AMERICAN AIRLINES        11115         197365225          0.563
+    FRONTIER AIRLINES         1228          22954995          0.535
+    ALASKA AIRLINES           1392          36543121          0.381
+    UNITED AIRLINES           4941         134468897          0.367
+    VIRGIN AMERICA             242          12017967          0.201
+    DELTA AIR LINES           1591         197033215          0.081
+    HAWAIIAN AIRLINES          122          16577572          0.074                           
+                             
+                             
+                             
+                             
+                             
