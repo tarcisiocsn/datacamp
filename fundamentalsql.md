@@ -591,6 +591,7 @@ FROM films
 GROUP BY release_year;
 ```
 OUTPUT
+
 <img width="737" alt="image" src="https://user-images.githubusercontent.com/68601128/120124593-786daa80-c18b-11eb-9c0d-fd6de11e8c9b.png">
 
 > Get the release year and largest budget for all films, grouped by release year.
@@ -632,6 +633,7 @@ FROM films
 GROUP BY language;
 ```
 OUTPUT
+
 <img width="744" alt="image" src="https://user-images.githubusercontent.com/68601128/120124957-131ab900-c18d-11eb-983a-f261affe131b.png">
 
 > Get the release year, country, and highest budget spent making a film for each year, for each country. Sort your results by release year and country.
@@ -643,6 +645,7 @@ GROUP BY release_year, country
 ORDER BY release_year, country; 
 ```
 OUTPUT
+
 <img width="754" alt="image" src="https://user-images.githubusercontent.com/68601128/120125123-c1266300-c18d-11eb-8a1c-b3dfae32068d.png">
 
 > Get the country, release year, and lowest amount grossed per release year per country. Order your results by country and release year.
@@ -658,6 +661,7 @@ ORDER BY country, release_year;
 **HAVING** 
 
 PS. In SQL, aggregate functions can't be used in WHERE clauses. For example, the following query is invalid:
+PS. Quando voce quiser usar o where, mas queria que fosse o statement de AVG, MAX, MIN, COUNT por exemplo, terá que usar o HAVING
 
 ```SQL
 --DARÁ INVÁLIDO
@@ -685,6 +689,165 @@ GROUP BY release_year
 HAVING COUNT(title) > 200;
 ```
 <img width="756" alt="image" src="https://user-images.githubusercontent.com/68601128/120125453-4100fd00-c18f-11eb-9a9d-4acdabdc6a48.png">
+
+>Modify your query so that only years with an average budget of greater than $60 million are included.
+
+```sql 
+SELECT release_year, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+FROM films
+WHERE release_year > 1990 
+GROUP BY release_year
+HAVING AVG(budget) > 60000000;
+```
+
+OUTPUT
+
+<img width="739" alt="image" src="https://user-images.githubusercontent.com/68601128/120205632-8f9aaf80-c200-11eb-828d-06b447eed93a.png">
+
+> Finally, modify your query to order the results from highest average gross earnings to lowest.
+
+```SQL
+SELECT release_year, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+FROM films
+WHERE release_year > 1990
+GROUP BY release_year
+HAVING AVG(budget) > 60000000
+ORDER BY AVG(gross) DESC;
+```
+
+OUTPUT
+
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/68601128/120205803-c07ae480-c200-11eb-8cf9-de08fa0ba11b.png">
+
+
+**EXTRA**
+
+Get the country, average budget, and average gross take of countries that have made more than 10 films. Order the result by country name, and limit the number of results displayed to 5. You should alias the averages as avg_budget and avg_gross respectively.
+
+```sql 
+-- select country, average budget, 
+--     and average gross
+SELECT country, AVG(budget) AS avg_budget, AVG(gross) AS avg_gross
+-- from the films table
+FROM films
+-- group by country 
+GROUP BY country
+-- where the country has more than 10 titles
+HAVING COUNT(country) > 10
+-- order by country
+ORDER BY country
+-- limit to only show 5 results
+LIMIT 5; 
+```
+
+<img width="752" alt="image" src="https://user-images.githubusercontent.com/68601128/120206317-721a1580-c201-11eb-932e-670ef907b15c.png">
+
+
+**INTRODUCTION TO INNER JOIN**
+
+<img width="436" alt="image" src="https://user-images.githubusercontent.com/68601128/120208615-100edf80-c204-11eb-8e79-206d06161569.png">
+
+```sql 
+SELECT *
+FROM left_table
+INNER JOIN right_table
+ON left_table.id = right_table.id;
+```
+
+Real Example:
+
+```sql
+SELECT p1.country, p1.continent, prime_minister, president
+FROM prime_ministers AS p1
+INNER JOIN presidents AS p2 
+ON p1.country = p2.country;
+```
+OUTPUT
+
+<img width="577" alt="image" src="https://user-images.githubusercontent.com/68601128/120209094-a7743280-c204-11eb-910a-7abd95fc6a80.png">
+
+Throughout this course, you'll be working with the `countries` database containing information about the most populous world cities as well as country-level economic data, population data, and geographic data. This `countries` database also contains information on languages spoken in each country.
+
+You can see the different tables in this database by clicking on the tabs on the bottom right below query.sql. Click through them to get a sense for the types of data that each table contains before you continue with the course! Take note of the fields that appear to be shared across the tables.
+
+<img width="746" alt="image" src="https://user-images.githubusercontent.com/68601128/120210404-1f8f2800-c206-11eb-8aba-4aa1b2c033b1.png">
+
+You'll start off with a SELECT statement and then build up to an inner join with the `cities` and `countries` tables. Let's get to it!
+
+> `cities` table 
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120211091-e99e7380-c206-11eb-985c-aec31d3b0d73.png">
+
+> `countries` table
+
+<img width="887" alt="image" src="https://user-images.githubusercontent.com/68601128/120211170-033fbb00-c207-11eb-921c-9082d23efe49.png">
+
+
+
+Instructions 1
+
++ Inner join the `cities` table on the left to the `countries` table on the right, keeping all of the fields in both tables.
++ You should match the tables on the `country_code` field in `cities` and the `code` field in `countries.`
++ Do not alias your tables here or in the next step. Using `cities` and `countries` is fine for now.
+
+```sql
+SELECT * 
+FROM cities
+  -- 1. Inner join to countries
+  INNER JOIN countries
+    -- 2. Match on the country codes
+    ON cities.country_code = countries.code;
+```
+
+OUTPUT
+
+<img width="1213" alt="image" src="https://user-images.githubusercontent.com/68601128/120215464-23be4400-c20c-11eb-8f7e-19e73b98aae8.png">
+
+
+Instructions 2
+
++ Modify the SELECT statement to keep only the name of the city, the name of the country, and the name of the region the country resides in.
++ Recall from our Intro to SQL for Data Science course that you can alias fields using AS. Alias the name of the city AS city and the name of the country AS country.
+
+```sql 
+-- 1. Select name fields (with alias) and region 
+SELECT cities.name AS city, countries.name AS country, region
+FROM cities
+  INNER JOIN countries
+    ON cities.country_code = countries.code;
+```
+OUTPUT
+
+<img width="878" alt="image" src="https://user-images.githubusercontent.com/68601128/120216143-076ed700-c20d-11eb-8e51-7ab68ff84958.png">
+
+**GENERAL RULE INNER JOIN**
+
+```SQL
+SELECT c1.name AS city, c2.name AS country
+FROM cities AS c1
+INNER JOIN countries AS c2
+ON c1.country_code = c2.code;
+```
+Notice that to select a field in your query that appears in multiple tables, you'll need to identify which table/table alias you're referring to by using a . in your SELECT statement. (É UM EXEMPLO COM A TABELA CITIES E COUNTRIES QUE TEM O MESMO `NAME`PARA DIFERENTES PARTES, LOGO, VOCÊ COLOCA  `AS` PARA DIFERENCIAR OS 2)
+
+You'll now explore a way to get data from both the `countries` and `economies` tables to examine the inflation rate for both 2010 and 2015.
+
+<img width="1217" alt="image" src="https://user-images.githubusercontent.com/68601128/120216450-6af90480-c20d-11eb-8bcb-19d935470b1e.png">
+
+<img width="1225" alt="image" src="https://user-images.githubusercontent.com/68601128/120216465-72201280-c20d-11eb-8cab-f39430f44bdc.png">
+
+Instructions
+
+Join the tables countries (left) and economies (right) aliasing countries AS c and economies AS e.
+Specify the field to match the tables ON.
+    From this join, SELECT:
+        c.code, aliased as country_code.
+        name, year, and inflation_rate, not aliased.
+
+
+
+
+
 
 
 
