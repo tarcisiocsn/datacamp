@@ -1,0 +1,695 @@
+# SQL 
+
+## TIPS
+
+**Filtering Results**
+```sql
+
+    = equal
+    <> not equal
+    < less than
+    > greater than
+    <= less than or equal to
+    >= greater than or equal to
+```
+
+**SELECT DISTINCT**
+
+Often your results will include many duplicate values. If you want to select all the unique values from a column, you can use the DISTINCT keyword.
+This might be useful if, for example, you're interested in knowing which languages are represented in the films table:
+
+```SQL
+SELECT DISTINCT language
+FROM films;
+```
+**PRACTICE WITH COUNT**
+
+As you've seen, COUNT(*) tells you how many rows are in a table. However, if you want to count the number of non-missing values in a particular column, you can call COUNT on just that column.
+
+For example, to count the number of birth dates present in the people table:
+
+```SQL
+SELECT COUNT(birthdate)
+FROM people;
+```
+It's also common to combine COUNT with DISTINCT to count the number of distinct values in a column.
+
+For example, this query counts the number of distinct birth dates contained in the `people` table:
+
+```SQL
+SELECT COUNT(DISTINCT birthdate)
+FROM people;
+```
+> Count the number of unique countries in the films table.
+```SQL
+SELECT COUNT(DISTINCT country)
+FROM films; 
+```
+
+**WHERE ARE**
+
+```SQL 
+SELECT title
+FROM films
+WHERE release_year > 1994
+AND release_year < 2000;
+
+-- OR
+
+SELECT title
+FROM films
+WHERE release_year > 1994 AND < 2000; 
+
+```
+OR
+
+```SQL 
+SELECT title, release_year
+FROM films
+WHERE language = 'Spanish' AND release_year < 2000; 
+
+```
+
+Nice example: Get all details for Spanish language films released after 2000, but before 2010.
+
+```sql 
+SELECT *
+FROM films
+WHERE language = 'Spanish' 
+AND release_year > 2000 
+AND release_year < 2010;
+
+```
+
+**WHERE AND OR**
+
+What if you want to select rows based on multiple conditions where some but not all of the conditions need to be met? For this, SQL has the OR operator.
+You now know how to select rows that meet some but not all conditions by combining **AND** and **OR**.
+
+For example, the following returns all films released in either 1994 or 2000:
+
+```SQL 
+SELECT title
+FROM films
+WHERE release_year = 1994
+OR release_year = 2000;
+
+```
+
+When combining AND and OR, be sure to enclose the individual clauses in parentheses, like so:
+
+```SQL
+SELECT title
+FROM films
+WHERE (release_year = 1994 OR release_year = 1995)
+AND (certification = 'PG' OR certification = 'R');
+```
+
+For example, the following query selects all films that were released in 1994 or 1995 which had a rating of PG or R
+
+```SQL 
+SELECT title
+FROM films
+WHERE (release_year = 1994 OR release_year = 1995)
+AND (certification = 'PG' OR certification = 'R');
+```
+Now you'll write a query to get the title and release year of films released in the 90s which were in French or Spanish and which took in more than $2M gross.
+
+```sql 
+
+SELECT title, release_year
+FROM films
+WHERE (release_year >= 1990 AND release_year < 2000)
+AND (language = 'French' OR language = 'Spanish')
+AND gross > 2000000;
+-- gross é receita bruta
+```
+
+**BETWEEN**
+
+Checking for ranges like this is very common, so in SQL the BETWEEN keyword provides a useful shorthand for filtering values within a specified range. 
+This query is equivalent to the one above:
+```sql
+SELECT title
+FROM films
+WHERE release_year
+BETWEEN 1994 AND 2000;
+```
+ps. It's important to remember that BETWEEN is inclusive, meaning the beginning and end values are included in the results!
+
+For example, suppose we have a table called kids. We can get the names of all kids between the ages of 2 and 12 from the United States:
+
+```sql 
+SELECT name
+FROM kids
+WHERE age BETWEEN 2 AND 12
+AND nationality = 'USA';
+```
+
+**WHERE IN**
+
+As you've seen, WHERE is very useful for filtering results. However, if you want to filter based on many conditions, WHERE can get unwieldy. For example:
+
+```SQL 
+SELECT name
+FROM kids
+WHERE age = 2
+OR age = 4
+OR age = 6
+OR age = 8
+OR age = 10;
+```
+
+Enter the IN operator! The IN operator allows you to specify multiple values in a WHERE clause, making it easier and quicker to specify multiple OR conditions! Neat, right?
+So, the above example would become simply:
+
+```SQL 
+SELECT name
+FROM kids
+WHERE age IN (2, 4, 6, 8, 10);
+```
+
+Get the title and release year of all films released in 1990 or 2000 that were longer than two hours. Remember, duration is in minutes!
+
+```sql 
+SELECT title, release_year
+FROM films
+WHERE release_year IN (1990, 2000)
+AND duration > 120; 
+```
+Get the title and language of all films which were in English, Spanish, or French.
+
+```sql 
+SELECT title, language 
+FROM films
+WHERE language IN ('English', 'Spanish', 'French');
+```
+**INTRODUCTION TO NULL AND NOT NULL**
+
+In SQL, NULL represents a missing or unknown value. You can check for NULL values using the expression ``IS NULL``. For example, to count the number of missing birth dates in the people table:
+
+```sql 
+SELECT COUNT(*)
+FROM people
+WHERE birthdate IS NULL;
+```
+
+Sometimes, you'll want to filter out missing values so you only get results which are not NULL. To do this, you can use the IS NOT NULL operator.
+
+For example, this query gives the names of all people whose birth dates are not missing in the people table.
+
+```sql 
+SELECT name
+FROM people
+WHERE birthdate IS NOT NULL;
+```
+**LIKE AND NOT LIKE**
+
+As you've seen, the WHERE clause can be used to filter text data. However, so far you've only been able to filter by specifying the exact text you're interested in. In the real world, often you'll want to search for a pattern rather than a specific text string.
+
+In SQL, the LIKE operator can be used in a WHERE clause to search for a pattern in a column. To accomplish this, you use something called a wildcard as a placeholder for some other values. There are two wildcards you can use with LIKE:
+
+The ``%`` wildcard will match zero, one, or many characters in text. For example, the following query matches companies like ``'Data'``, ``'DataC'``, ``'DataCamp'``, ``'DataMind'``, and so on:
+
+```SQL 
+SELECT name
+FROM companies
+WHERE name LIKE 'Data%';
+```
+The ``_`` wildcard will match a single character. For example, the following query matches companies like ``'DataCamp'``, ``'DataComp'``, and so on:
+
+```SQL
+SELECT name
+FROM companies
+WHERE name LIKE 'DataC_mp';
+```
+
+PS. You can also use the ``NOT LIKE`` operator to find records that don't match the pattern you specify.
+
+> Get the names of all people whose names begin with 'B'. The pattern you need is 'B%'.
+
+```SQL 
+SELECT name
+FROM people 
+WHERE name LIKE 'B%'; 
+```
+> Get the names of people whose names have 'r' as the second letter. The pattern you need is '_r%'.
+
+```sql 
+SELECT name
+FROM people
+WHERE name LIKE '_r%';
+```
+> Get the names of people whose names don't start with A. The pattern you need is 'A%'.
+
+```sql 
+SELECT name
+FROM people 
+WHERE name NOT LIKE 'A%'; 
+```
+
+**AGGREGATE FUNCTIONS**
+
+Often, you will want to perform some calculation on the data in a database. SQL provides a few functions, called aggregate functions, to help you out with this.
+
+For example,
+
+```sql 
+SELECT AVG(budget)
+FROM films;
+
+```
+
+gives you the `average` value from the budget column of the films table. Similarly, the `MAX` function returns the highest budget:
+
+```sql 
+SELECT MAX(budget)
+FROM films;
+```
+The `SUM` function returns the result of adding up the numeric values in a column:
+
+```SQL
+SELECT SUM(budget)
+FROM films;
+
+```
+
+PS. You can probably guess what the MIN function does! Now it's your turn to try out some SQL functions. ;)
+
+> Use the `SUM` function to get the total duration of all films.
+
+```sql
+SELECT SUM(duration)
+FROM films; 
+```
+
+> Get the average duration of all films.
+
+```sql 
+SELECT AVG(duration)
+FROM films;
+
+```
+
+> Get the duration of the shortest film.
+
+```sql 
+SELECT MIN(duration)
+FROM films;
+```
+
+> Get the amount grossed by the worst performing film.
+
+```sql
+SELECT MIN(gross)
+FROM films;
+
+```
+
+**Combining aggregate functions with WHERE**
+
+ggregate functions can be combined with the WHERE clause to gain further insights from your data.
+
+For example, to get the total budget of movies made in the year 2010 or later:
+
+```sql
+SELECT SUM(budget)
+FROM films
+WHERE release_year >= 2010;
+```
+
+> Get the average amount grossed by all films whose titles start with the letter 'A'.
+
+```sql
+SELECT AVG(gross)
+FROM films
+WHERE title LIKE 'A%'
+```
+
+> Get the amount grossed by the worst performing film in 1994.
+
+```sql 
+SELECT MIN(gross)
+FROM films
+WHERE release_year = 1994
+-- pior rendimento na bilheteria
+```
+> Get the amount grossed by the best performing film between 2000 and 2012, inclusive.
+
+```SQL
+SELECT MAX(gross)
+FROM films
+WHERE release_year BETWEEN 2000 AND 2012
+```
+
+**N NOTE ON ARITHMETIC**
+
+In addition to using aggregate functions, you can perform basic arithmetic with symbols like `+`, `-`, `*`, and `/`.
+
+So, for example, this gives a result of 12:
+
+```SQL
+SELECT (4 * 3);
+```
+
+However, the following gives a result of 1:
+
+```SQL
+SELECT (4 / 3);
+```
+> What's going on here?
+> SQL assumes that if you divide an integer by an integer, you want to get an integer back. So be careful when dividing!
+
+If you want more precision when dividing, you can add decimal places to your numbers. For example,
+
+```SQL
+SELECT (4.0 / 3.0) AS result;
+```
+gives you the result you would expect: `1.333`.
+
+**IT'S AS SIMPLE AS ALIASING** 
+
+You may have noticed in the first exercise of this chapter that the column name of your result was just the name of the function you used. For example,
+
+```SQL 
+SELECT MAX(budget)
+FROM films;
+```
+gives you a result with one column, named max. But what if you use two functions like this?
+
+```SQL
+SELECT MAX(budget), MAX(duration)
+FROM films;
+
+```
+OUTPUT
+
+<img width="678" alt="image" src="https://user-images.githubusercontent.com/68601128/120119198-bc9d8280-c16c-11eb-9696-1109cde8993d.png">
+
+Well, then you'd have two columns named max, which isn't very useful!
+
+To avoid situations like this, SQL allows you to do something called aliasing. Aliasing simply means you assign a temporary name to something. To alias, you use the `AS` keyword, which you've already seen earlier in this course.
+
+For example, in the above example we could use aliases to make the result clearer:
+
+```SQL
+SELECT MAX(budget) AS max_budget,
+       MAX(duration) AS max_duration
+FROM films;
+```
+OUPUT
+
+<img width="501" alt="image" src="https://user-images.githubusercontent.com/68601128/120119255-1605b180-c16d-11eb-83b5-8e97d346473b.png">
+
+Aliases are helpful for making results more readable!
+
+> Get the title and net profit (the amount a film grossed, minus its budget) for all films. Alias the net profit as net_profit.
+
+```sql 
+SELECT title, (gross - budget) AS net_profit
+FROM films; 
+
+-- nesse caso pode dar até net_profit negativo
+```
+> Get the title and duration in hours for all films. The duration is in minutes, so you'll need to divide by 60.0 to get the duration in hours. Alias the duration in hours as duration_hours.
+
+```sql 
+SELECT title, duration/60.0 AS duration_hours
+FROM films; 
+```
+OUTPUT
+
+<img width="730" alt="image" src="https://user-images.githubusercontent.com/68601128/120119398-e905ce80-c16d-11eb-8e93-592868c3288c.png">
+
+> Get the average duration in hours for all films, aliased as avg_duration_hours.
+
+```sql
+SELECT AVG(duration)/60.0 AS avg_duration_hours
+FROM films
+```
+
+OUTPUT
+
+<img width="293" alt="image" src="https://user-images.githubusercontent.com/68601128/120119446-1f434e00-c16e-11eb-9043-926813b71d08.png">
+
+> Get the percentage of people who are no longer alive. Alias the result as percentage_dead. Remember to use 100.0 and not 100!
+
+```sql 
+-- get the count(deathdate) and multiply by 100.0
+-- then divide by count(*)
+
+SELECT COUNT(deathdate) * 100.0 / COUNT(*) AS percentage_dead
+FROM people
+```
+
+> Get the number of years between the newest film and oldest film. Alias the result as difference.
+
+```sql 
+SELECT MAX(release_year) - MIN(release_year) AS difference
+FROM films; 
+```
+OUTPUT
+
+<img width="112" alt="image" src="https://user-images.githubusercontent.com/68601128/120119689-84e40a00-c16f-11eb-8f89-4dd471236768.png">
+
+> Get the number of decades the films table covers. Alias the result as number_of_decades. The top half of your fraction should be enclosed in parentheses.
+
+```sql
+SELECT (MAX(release_year) - MIN(release_year)) / 10.0
+AS number_of_decades
+FROM films;
+```
+
+**ORDER BY** 
+
+In this chapter you'll learn how to sort and group your results to gain further insight. Let's go!
+
+In SQL, the `ORDER BY` keyword is used to sort results in ascending or descending order according to the values of one or more columns. 
+
+By default `ORDER BY` will sort in ascending order. If you want to sort the results in descending order, you can use the `DESC` keyword. For example,
+
+```SQL
+SELECT title
+FROM films
+ORDER BY release_year DESC;
+```
+gives you the titles of films sorted by release year, from newest to oldest.
+
+> Get the names of people from the people table, sorted alphabetically.
+
+```sql 
+SELECT name
+FROM people
+ORDER BY name; 
+```
+
+> Get the names of people, sorted by birth date.
+
+```sql 
+SELECT name
+FROM people
+ORDER BY birthdate; 
+```
+> Get the birth date and name for every person, in order of when they were born.
+
+```sql 
+SELECT birthdate, name
+FROM people
+ORDER BY birthdate;
+```
+
+> Get the title of films released in 2000 or 2012, in the order they were released.
+
+```sql
+SELECT title
+FROM films
+WHERE (release_year = 2000 OR release_year = 2012)
+ORDER BY release_year
+```
+
+> Get all details for all films except those released in 2015 and order them by duration.
+
+```sql
+SELECT *
+FROM films
+WHERE release_year <> 2015
+ORDER BY duration; 
+
+```
+> Get the title and gross earnings for movies which begin with the letter 'M' and order the results alphabetically.
+
+```sql 
+SELECT title, gross
+FROM films
+WHERE title LIKE 'M%'
+ORDER BY title; 
+```
+> Get the IMDB score and film ID for every film from the reviews table, sorted from highest to lowest score.
+
+```sql 
+SELECT imdb_score, film_id
+FROM reviews
+ORDER BY imdb_score DESC;
+```
+**SORTING MULTIPLE COLUMNS**
+
+ORDER BY can also be used to sort on multiple columns. It will sort by the first column specified, then sort by the next, then the next, and so on. For example,
+
+```SQL
+SELECT birthdate, name
+FROM people
+ORDER BY birthdate, name;
+```
+sorts on birth dates first (oldest to newest) and then sorts on the names in alphabetical order. The order of columns is important!
+
+> Get the birth date and name of people in the people table, in order of when they were born and alphabetically by name.
+
+```sql
+SELECT birthdate, name
+FROM people
+ORDER BY birthdate, name;
+
+```
+
+**GROUP BY**
+
+For example, you might want to count the number of male and female employees in your company. Here, what you want is to group all the males together and count them, and group all the females together and count them. In SQL, GROUP BY allows you to group a result by one or more columns, like so:
+
+```SQL
+SELECT sex, count(*)
+FROM employees
+GROUP BY sex;
+```
+OUTPUT
+
+<img width="874" alt="image" src="https://user-images.githubusercontent.com/68601128/120124286-13658500-c18a-11eb-9e53-a20cb869715b.png">
+
+Commonly, GROUP BY is used with aggregate functions like COUNT() or MAX(). Note that GROUP BY always goes after the FROM clause!
+
+Note that you can combine `GROUP BY` with `ORDER BY` to group your results, calculate something about them, and then order your results. For example,
+
+OUTPUT
+
+<img width="485" alt="image" src="https://user-images.githubusercontent.com/68601128/120124354-7525ef00-c18a-11eb-9d95-9614f6ac929e.png">
+
+because there are more females at our company than males. `Note also that ORDER BY always goes after GROUP BY`. Let's try some exercises!
+
+> Get the release year and count of films released in each year.
+
+```SQL 
+SELECT release_year, count(*)
+FROM films
+GROUP BY release_year; 
+```
+<img width="744" alt="image" src="https://user-images.githubusercontent.com/68601128/120124463-ed8cb000-c18a-11eb-87f8-993fd8f29609.png">
+
+> Get the release year and average duration of all films, grouped by release year.
+
+```SQL
+SELECT release_year, AVG(duration)
+FROM films
+GROUP BY release_year;
+```
+OUTPUT
+<img width="737" alt="image" src="https://user-images.githubusercontent.com/68601128/120124593-786daa80-c18b-11eb-9c0d-fd6de11e8c9b.png">
+
+> Get the release year and largest budget for all films, grouped by release year.
+
+```sql
+SELECT release_year, MAX(budget)
+FROM films
+GROUP BY release_year;
+```
+> Get the IMDB score and count of film reviews grouped by IMDB score in the reviews table.
+
+```sql 
+SELECT imdb_score, COUNT(*)
+FROM reviews
+GROUP BY imdb_score;
+```
+OUTPUT
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120124693-f336c580-c18b-11eb-9927-56f55a4610c8.png">
+
+PS. Make sure to always put the ORDER BY clause at the end of your query. You can't sort values that you haven't calculated yet!
+
+> Get the release year and lowest gross earnings per release year.
+
+```sql 
+SELECT release_year, MIN(gross)
+FROM films
+GROUP BY release_year;
+```
+OUTPUT
+
+<img width="741" alt="image" src="https://user-images.githubusercontent.com/68601128/120124894-d5b62b80-c18c-11eb-92a7-88b819037c58.png">
+
+> Get the language and total gross amount films in each language made.
+
+```sql
+SELECT language, SUM(gross)
+FROM films
+GROUP BY language;
+```
+OUTPUT
+<img width="744" alt="image" src="https://user-images.githubusercontent.com/68601128/120124957-131ab900-c18d-11eb-983a-f261affe131b.png">
+
+> Get the release year, country, and highest budget spent making a film for each year, for each country. Sort your results by release year and country.
+
+```sql 
+SELECT release_year, country, MAX(budget)
+FROM films
+GROUP BY release_year, country
+ORDER BY release_year, country; 
+```
+OUTPUT
+<img width="754" alt="image" src="https://user-images.githubusercontent.com/68601128/120125123-c1266300-c18d-11eb-8a1c-b3dfae32068d.png">
+
+> Get the country, release year, and lowest amount grossed per release year per country. Order your results by country and release year.
+
+```sql
+SELECT country, release_year, MIN(gross)
+FROM films
+GROUP BY release_year, country
+ORDER BY country, release_year;
+```
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/68601128/120125177-fc289680-c18d-11eb-8235-d21bf6a113e2.png">
+
+**HAVING** 
+
+PS. In SQL, aggregate functions can't be used in WHERE clauses. For example, the following query is invalid:
+
+```SQL
+--DARÁ INVÁLIDO
+SELECT release_year
+FROM films
+GROUP BY release_year
+WHERE COUNT(title) > 10;
+```
+This means that if you want to filter based on the result of an aggregate function, you need another way! That's where the HAVING clause comes in. For example,
+
+```SQL
+SELECT release_year
+FROM films
+GROUP BY release_year
+HAVING COUNT(title) > 10;
+```
+`shows only those years in which more than 10 films were released.`
+
+> In how many different years were more than 200 movies released?
+
+```SQL
+SELECT release_year
+FROM films
+GROUP BY release_year
+HAVING COUNT(title) > 200;
+```
+<img width="756" alt="image" src="https://user-images.githubusercontent.com/68601128/120125453-4100fd00-c18f-11eb-9a9d-4acdabdc6a48.png">
+
+
+
+
+
+
+
+
