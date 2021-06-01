@@ -807,6 +807,7 @@ OUTPUT
 Instructions 2
 
 + Modify the SELECT statement to keep only the name of the city, the name of the country, and the name of the region the country resides in.
+
 + Recall from our Intro to SQL for Data Science course that you can alias fields using AS. Alias the name of the city AS city and the name of the country AS country.
 
 ```sql 
@@ -843,11 +844,12 @@ And `population` table
 
 Instructions
 
-+Join the tables `countries` (left) and `economies` (right) aliasing `countries AS c` and `economies AS e`.
++ Join the tables `countries` (left) and `economies` (right) aliasing `countries AS c` and `economies AS e`.
 
-+Specify the field to match the tables `ON`.
++ Specify the field to match the tables `ON`.
 
-+From this join, `SELECT`:
++ From this join, `SELECT`:
+
 ···`c.code`, aliased as `country_code`.··
 ···`name`, `year`, and `inflation_rate`, not aliased.··
 
@@ -867,9 +869,11 @@ OUTPUT
 
 INSTRUCTIONS
 
-+Inner join countries (left) and populations (right) on the code and country_code fields respectively.
-+Alias countries AS c and populations AS p.
-+Select code, name, and region from countries and also select year and fertility_rate from populations (5 fields in total).
++ Inner join countries (left) and populations (right) on the code and country_code fields respectively.
+
++ Alias countries AS c and populations AS p.
+
++ Select code, name, and region from countries and also select year and fertility_rate from populations (5 fields in total).
 
 ```SQL 
 -- 4. Select fields
@@ -888,9 +892,11 @@ OUTPUT
 
 INSTRUCTIONS
 
-+Add an additional inner join with economies to your previous query by joining on code.
-+Include the unemployment_rate column that became available through joining with economies.
-+Note that year appears in both populations and economies, so you have to explicitly use e.year instead of year as you did before.
++ Add an additional inner join with economies to your previous query by joining on code.
+
++ Include the unemployment_rate column that became available through joining with economies.
+
++ Note that year appears in both populations and economies, so you have to explicitly use e.year instead of year as you did before.
 
 ```SQL 
 -- 6. Select fields
@@ -912,9 +918,11 @@ OUTPUT
 
 INSTRUCTIONS
 
-+Scroll down the query result and take a look at the results for Albania from your previous query. Does something seem off to you?
-+The trouble with doing your last join on c.code = e.code and not also including year is that e.g. the 2010 value for fertility_rate is also paired with the 2015 value for unemployment_rate.
-+Fix your previous query: in your last ON clause, use AND to add an additional joining condition. In addition to joining on code in c and e, also join on year in e and p.
++ Scroll down the query result and take a look at the results for Albania from your previous query. Does something seem off to you?
+
++ The trouble with doing your last join on c.code = e.code and not also including year is that e.g. the 2010 value for fertility_rate is also paired with the 2015 value for unemployment_rate.
+
++ Fix your previous query: in your last ON clause, use AND to add an additional joining condition. In addition to joining on code in c and e, also join on year in e and p.
 
 ```SQL
 -- 6. Select fields
@@ -938,6 +946,8 @@ OUTPUT
 
 **INNER JOIN via USING** 
 
+Usa USING quando os nomes das tabelas são iguais, como no exemplo
+
 <img width="651" alt="image" src="https://user-images.githubusercontent.com/68601128/120234798-11093680-c22f-11eb-9605-e4036a421737.png">
 
 When joining tables with a common field name, e.g.
@@ -947,20 +957,72 @@ SELECT *
 FROM countries
   INNER JOIN economies
     ON countries.code = economies.code
+   
 ```
+You can use USING as a shortcut:
+
+```sql
+SELECT *
+FROM countries
+  INNER JOIN economies
+    USING(code)
+```
+You'll now explore how this can be done with the `countries` and `languages` tables.
 
 INSTRUCTIONS
 
-+Inner join countries on the left and languages on the right with USING(code).
-+select the fields corresponding to:
++ Inner join countries on the left and languages on the right with USING(code).
+
++ select the fields corresponding to:
+
 1.country name AS country,
+
 2.continent name,
+
 3.language name AS language, and
+
 4.whether or not the language is official.
-+Remember to alias your tables using the first letter of their names.
+
++ Remember to alias your tables using the first letter of their names.
+
+```SQL
+-- 4. Select fields
+SELECT c.name AS country, continent, l.name AS language, official
+  -- 1. From countries (alias as c)
+  FROM countries AS c 
+  -- 2. Join to languages (as l)
+  INNER JOIN languages AS l
+    -- 3. Match using code
+    USING(code)
+```
+OUTPUT
+
+<img width="737" alt="image" src="https://user-images.githubusercontent.com/68601128/120236260-3b102800-c232-11eb-843e-9a48126d919c.png">
+
+**SELF-JOIN**
+
+Self-joins are used to compare values in a field to other values of the same field from within the same table.
+
+What if you wanted to create a new table showing countries that are in the same continent matched as pairs? Let's explore a chunk of INNER JOIN code using the prime_ministers table. 
+
+<img width="577" alt="image" src="https://user-images.githubusercontent.com/68601128/120241584-7104da80-c239-11eb-8d68-a04ee7653519.png">
+
+<img width="715" alt="image" src="https://user-images.githubusercontent.com/68601128/120251100-cdc2be00-c256-11eb-8220-b82031f28d89.png">
+
+**CASE WHEN and THEN**
+
+<img width="581" alt="image" src="https://user-images.githubusercontent.com/68601128/120251632-89d0b880-c258-11eb-9755-8a274c7b5ac7.png">
 
 
+CASE is a way to do multiple `if-then-else` statements in a simplified way in SQL. 
 
+<img width="601" alt="image" src="https://user-images.githubusercontent.com/68601128/120251606-71f93480-c258-11eb-8f4e-5fd19f25e8b3.png">
+
+You can now see the basic layout for creating a new field containing the groupings. How might we fill them in? After the first WHEN should specify that we want to check for indep_year being less than 1900. Next we want indep_year_group to contain 'between 1900 and 1930' in the next blank. Lastly any other record not matching these conditions will be assigned the value of 'after 1930' for indep_year_group. 
+
+Check out the completed query with completed blanks. Notice how the values of indep_year are grouped in indep_year_group. Also observe how continent relates to indep_year_group. 
+
+<img width="596" alt="image" src="https://user-images.githubusercontent.com/68601128/120251664-a40a9680-c258-11eb-9f13-6f1eb5c0d579.png">
 
 
 
