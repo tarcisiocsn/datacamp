@@ -1362,6 +1362,264 @@ Then complete a similar left join and conclude with an inner join.
 
 <img width="1090" alt="image" src="https://user-images.githubusercontent.com/68601128/120411041-80b01c00-c32a-11eb-9a70-97b7809640ae.png">
 
+INSTRUCTIONS 1.1
+
++ Choose records in which `region` corresponds to North America or is `NULL`.
+
+```SQL
+SELECT name AS country, code, region, basic_unit
+-- 3. From countries
+FROM countries
+  -- 4. Join to currencies
+  FULL JOIN currencies
+    -- 5. Match on code
+    USING (code) -- É usado quando os nomes da coluna são iguais, como todos são code, então para facilitar uso USING code e não countries.code = currencies.code
+-- 1. Where region is North America or null
+WHERE region = 'North America' OR region IS null 
+-- 2. Order by region
+ORDER BY region;
+```
+
+INSTRUCTIONS 1.2
+
++ Repeat the same query as above but use a LEFT JOIN instead of a FULL JOIN. Note what has changed compared to the FULL JOIN result!
+
+```SQL 
+
+SELECT name AS country, code, region, basic_unit
+-- 1. From countries
+FROM countries
+  -- 2. Join to currencies
+  LEFT JOIN currencies
+    -- 3. Match on code
+    USING (code)
+-- 4. Where region is North America or null
+WHERE region = 'North America' OR region IS null
+-- 5. Order by region
+ORDER BY region;
+```
+
+<img width="765" alt="image" src="https://user-images.githubusercontent.com/68601128/120411677-940fb700-c32b-11eb-83e8-6d5a613b0bd9.png">
+
+INSTRUCTIONS 1.3
+
++ Repeat the same query as above but use an `INNER JOIN` instead of a `FULL JOIN`. Note what has changed compared to the FULL JOIN and LEFT JOIN results!
+
+```SQL
+SELECT name AS country, code, region, basic_unit
+FROM countries
+  -- 1. Join to currencies
+  INNER JOIN currencies
+    USING (code)
+-- 2. Where region is North America or null
+WHERE region = 'North America' OR region IS NULL
+-- 3. Order by region
+ORDER BY region;
+```
+<img width="775" alt="image" src="https://user-images.githubusercontent.com/68601128/120411813-d33e0800-c32b-11eb-871f-0e36863a362b.png">
+
+Have you kept an eye out on the different numbers of records these queries returned? The FULL JOIN query returned 17 rows, the OUTER JOIN returned 4 rows, and the INNER JOIN only returned 3 rows. Do these results make sense to you?
+
+**FULL JOIN EXAMPLES (2)**
+
+You'll now investigate a similar exercise to the last one, but this time focused on using a table with more records on the left than the right. You'll work with the languages and countries tables.
+
+countries table
+
+<img width="825" alt="image" src="https://user-images.githubusercontent.com/68601128/120412293-b1915080-c32c-11eb-8cb4-8546cd1839fe.png">
+
+languages table
+
+<img width="831" alt="image" src="https://user-images.githubusercontent.com/68601128/120412327-c1a93000-c32c-11eb-90fa-d1c95b9a32e9.png">
+
+
+
+Begin with a full join with languages on the left and countries on the right. Appropriate fields have been selected for you again here.
+
+
+INSTRUCTION 1.1
+
++ Choose records in which countries.name starts with the capital letter 'V' or is NULL.
++ Arrange by countries.name in ascending order to more clearly see the results.
+
+
+```sql
+SELECT countries.name, code, languages.name AS language
+-- 3. From languages
+FROM languages
+  -- 4. Join to countries
+   FULL JOIN countries
+    -- 5. Match on code
+    USING (code)
+-- 1. Where countries.name starts with V or is null
+WHERE countries.name LIKE 'V%' OR countries.name IS NULL
+-- 2. Order by ascending countries.name
+ORDER BY countries.name;
+```
+<img width="829" alt="image" src="https://user-images.githubusercontent.com/68601128/120412391-dbe30e00-c32c-11eb-89fa-0d3c0370e6a1.png">
+
+INSTRUCTION 1.2
+
++ Repeat the same query as above but use a left join instead of a full join. Note what has changed compared to the full join result!
+
+```SQL
+
+SELECT countries.name, code, languages.name AS language
+FROM languages
+  -- 1. Join to countries
+  LEFT JOIN countries
+    -- 2. Match using code
+    USING (code)
+-- 3. Where countries.name starts with V or is null
+WHERE countries.name LIKE 'V%' OR countries.name IS NULL
+ORDER BY countries.name;
+```
+
+<img width="818" alt="image" src="https://user-images.githubusercontent.com/68601128/120412563-249ac700-c32d-11eb-91c1-9f972bd54758.png">
+
+INSTRUCTIONS 1.3
+
++ Repeat once more, but use an inner join instead of a left join. Note what has changed compared to the full join and left join results.
+
+```SQL
+SELECT countries.name, code, languages.name AS language
+FROM languages
+  -- 1. Join to countries
+  INNER JOIN countries
+    USING (code)
+-- 2. Where countries.name starts with V or is null
+WHERE countries.name LIKE 'V%' OR countries.name IS NULL
+ORDER BY countries.name;
+```
+
+<img width="838" alt="image" src="https://user-images.githubusercontent.com/68601128/120412683-5ad84680-c32d-11eb-855e-552104646186.png">
+
+Well done. Again, make sure to compare the number of records the different types of joins return and try to verify whether the results make sense.
+
+**FULL JOIN (3)**
+
+You'll now explore using two consecutive full joins on the three tables you worked with in the previous two exercises.
+
+INSTRUCTIONS
+
++ Complete a full join with countries on the left and languages on the right.
++ Next, full join this result with currencies on the right.
++ Use LIKE to choose the Melanesia and Micronesia regions (Hint: 'M%esia').
++ Select the fields corresponding to the country name AS country, region, language name AS language, and basic and fractional units of currency.
+
+```sql
+-- 7. Select fields (with aliases)
+SELECT c1.name AS country, region, l.name AS language, basic_unit, frac_unit
+-- 1. From countries (alias as c1)
+FROM countries AS c1
+  -- 2. Join with languages (alias as l)
+  FULL JOIN languages AS l
+    -- 3. Match on code
+    USING (code)
+  -- 4. Join with currencies (alias as c2)
+  FULL JOIN currencies AS c2
+    -- 5. Match on code
+    USING (code)
+-- 6. Where region like Melanesia and Micronesia
+WHERE region LIKE 'M%esia';
+```
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120413317-6b3cf100-c32e-11eb-9aee-c2be22e1a0f2.png">
+
+
+**CROSS JOIN**
+
+2. CROSS JOIN diagram
+
+In this diagram we have two tables named table1 and table2. Each table only has one field, both with the name of id. The result of the CROSS JOIN is all nine combinations of the id values of 1, 2, and 3 in table1 with the id values of A, B, and C for table2. Next you'll explore an example from the leaders database and look over the SQL syntax for a CROSS JOIN. 
+
+<img width="159" alt="image" src="https://user-images.githubusercontent.com/68601128/120413433-aa6b4200-c32e-11eb-8353-1c08cd83639e.png">
+
+3. Pairing prime ministers with presidents
+
+Suppose that all prime ministers in North America and Oceania in the prime_ministers table are scheduled for individual meetings with all presidents in the presidents table. You can look at all of these combinations by using a CROSS JOIN. The syntax here remains similar to what you've seen earlier in the course. We use a WHERE clause to focus on only prime ministers in North America and Oceania in the prime_ministers table. The results of the query give us the pairings for the two prime ministers in North America and Oceania from the prime_ministers table with the seven presidents in the presidents table. 
+
+<img width="609" alt="image" src="https://user-images.githubusercontent.com/68601128/120413579-f0c0a100-c32e-11eb-89db-5c6d195a202f.png">
+
+A table of two cities
+
+This exercise looks to explore languages potentially and most frequently spoken in the cities of Hyderabad, India and Hyderabad, Pakistan.
+
+You will begin with a cross join with cities AS c on the left and languages AS l on the right. Then you will modify the query using an inner join in the next tab.
+
+INSTRUCTIONS 1.1
+
++ Create the cross join as described above. (Recall that cross joins do not use ON or USING.)
++ Make use of LIKE and Hyder% to choose Hyderabad in both countries.
++ Select only the city name AS city and language name AS language.
+
+```sql
+-- 4. Select fields
+SELECT c.name AS city, l.name AS language
+-- 1. From cities (alias as c)
+FROM cities AS c        
+  -- 2. Join to languages (alias as l)
+  CROSS JOIN languages AS l 
+-- 3. Where c.name like Hyderabad
+WHERE c.name LIKE 'Hyder%';
+```
+
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/68601128/120413902-7d6b5f00-c32f-11eb-9b9f-52638cd914d6.png">
+
+INSTRUCTIONS 1.2
+
++ use an inner join instead of a cross join. Think about what the difference will be in the results for this inner join result and the one for the cross join.
+
+```SQL
+-- 5. Select fields
+SELECT c.name AS city, l.name AS language 
+-- 1. From cities (alias as c)
+FROM cities AS c     
+  -- 2. Join to languages (alias as l)
+  INNER JOIN languages AS l
+    -- 3. Match on country code
+    ON c.country_code = l.code
+-- 4. Where c.name like Hyderabad
+WHERE c.name LIKE 'Hyder%';
+```
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120414330-303bbd00-c330-11eb-9c8c-a2551ea62f23.png">
+
+Good one! Can you see the difference between a CROSS JOIN and a INNER JOIN?
+
+**Outer challenge**
+
+Now that you're fully equipped to use outer joins, try a challenge problem to test your knowledge!
+
+In terms of life expectancy for 2010, determine the names of the lowest five countries and their regions.
+
+INSTRUCTIONS
+
++ Select country name AS country, region, and life expectancy AS life_exp.
++ Make sure to use LEFT JOIN, WHERE, ORDER BY, and LIMIT.
+
+```SQL
+-- Select fields
+SELECT c.name AS country, region,
+life_expectancy AS life_exp
+-- From countries (alias as c)
+FROM countries AS c
+  -- Join to populations (alias as p)
+  LEFT JOIN populations AS p
+    -- Match on country code
+    ON c.code = p.country_code
+-- Focus on 2010
+WHERE year = 2010
+-- Order by life_exp
+ORDER BY life_exp
+-- Limit to 5 records
+LIMIT 5; 
+```
+
+<img width="751" alt="image" src="https://user-images.githubusercontent.com/68601128/120414822-ef907380-c330-11eb-99bb-a4dc81f2a0de.png">
+
+
+
+
 
 
 
