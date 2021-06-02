@@ -1024,8 +1024,343 @@ Check out the completed query with completed blanks. Notice how the values of in
 
 <img width="596" alt="image" src="https://user-images.githubusercontent.com/68601128/120251664-a40a9680-c258-11eb-9f13-6f1eb5c0d579.png">
 
+**SELF-JOIN EXAMPLES**
+
+In this exercise, you'll use the `populations` table to perform a self-join to calculate the percentage increase in population from 2010 to 2015 for each country code!
+
+Since you'll be joining the populations table to itself, you can alias populations as `p1` and also `populations` as `p2`. This is good practice whenever you are aliasing and your tables have the same first letter. Note that you are required to alias the tables with self-joins.
+
+INSTRUCTION 1.1
+
+> Population Table
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120252284-758dbb00-c25a-11eb-831b-d1a76ddc3291.png">
+
++ Join populations with itself ON country_code.
+
++ select the country_code from p1 and the size field from both p1 and p2. SQL won't allow same-named fields, so alias p1.size as size2010 and p2.size as size2015.
+
+```SQL
+-- 4. Select fields with aliases
+SELECT p1.country_code, p1.size AS size2010, p2.size AS size2015
+-- 1. From populations (alias as p1)
+FROM populations AS p1
+  -- 2. Join to itself (alias as p2)
+  INNER JOIN populations AS p2
+    -- 3. Match on country code
+    ON p1.country_code = p2.country_code
+```
+
+OUTPUT
+
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/68601128/120251994-986b9f80-c259-11eb-9677-043cca7a34df.png">
+
+INSTRUCTION 1.2
+
+Notice from the result that for each country_code you have four entries laying out all combinations of 2010 and 2015.
+
++ Extend the ON in your query to include only those records where the p1.year (2010) matches with p2.year - 5 (2015 - 5 = 2010). This will omit the three entries per country_code that you aren't interested in.
+
+```SQL 
+-- 5. Select fields with aliases
+SELECT p1.country_code,
+       p1.size AS size2010,
+       p2.size AS size2015
+-- 1. From populations (alias as p1)
+FROM populations as p1
+  -- 2. Join to itself (alias as p2)
+  INNER JOIN populations as p2
+    -- 3. Match on country code
+    ON p1.country_code = p2.country_code
+        -- 4. and year (with calculation)
+       AND p1.year = p2.year - 5; 
+```
+
+<img width="751" alt="image" src="https://user-images.githubusercontent.com/68601128/120252702-ade1c900-c25b-11eb-8b87-1e6279539b09.png">
+
+INSTRUCTION 1.3
+
+<img width="472" alt="image" src="https://user-images.githubusercontent.com/68601128/120252756-cd78f180-c25b-11eb-85ec-a8ad48e42972.png">
 
 
+``` SQL
+SELECT p1.country_code,
+       p1.size AS size2010, 
+       p2.size AS size2015,
+       -- 1. calculate growth_perc
+       ((p2.size - p1.size)/p1.size * 100.0) AS growth_perc
+-- 2. From populations (alias as p1)
+FROM populations AS p1
+  -- 3. Join to itself (alias as p2)
+  INNER JOIN populations AS p2
+    -- 4. Match on country code
+    ON p1.country_code = p2.country_code
+        -- 5. and year (with calculation)
+        AND p1.year = p2.year - 5;
+```
+OUTPUT
+
+<img width="811" alt="image" src="https://user-images.githubusercontent.com/68601128/120252783-e2558500-c25b-11eb-8f20-b98e69f72dc6.png">
+
+**CASE WHEN AND THEN EXAMPLES**
+
+Often it's useful to look at a numerical field not as raw data, but instead as being in different categories or groups.
+
+You can use CASE with `WHEN`, `THEN`, `ELSE`, and `END` to define a new grouping field.
+
+INSTRUCTIONS
+
+Using the countries table, create a new field AS geosize_group that groups the countries into three groups:
+
++ If `surface_area` is greater than 2 million, `geosize_group` is `'large'`.
++ If `surface_area` is greater than 350 thousand but not larger than 2 million, `geosize_group` is `'medium'`.
++ Otherwise, geosize_group is `'small'`.
+
+```SQL
+SELECT name, continent, code, surface_area,
+    -- 1. First case
+    CASE WHEN surface_area > 2000000 THEN 'large'
+        -- 2. Second case
+        WHEN  surface_area > 350000 THEN 'medium'
+        -- 3. Else clause + end
+        ELSE 'small' END
+        -- 4. Alias name
+        AS geosize_group
+-- 5. From table
+FROM countries;
+```
+OUTPUT
+
+<img width="746" alt="image" src="https://user-images.githubusercontent.com/68601128/120253218-2c8b3600-c25d-11eb-8900-1f74975149df.png">
+
+**INNER CHALLENGE**
+
+The table you created with the added `geosize_group` field has been loaded for you here with the name `countries_plus`. Observe the use of (and the placement of) the `INTO` command to create this countries_plus table:
+
+```SQL
+SELECT name, continent, code, surface_area,
+    CASE WHEN surface_area > 2000000
+            THEN 'large'
+       WHEN surface_area > 350000
+            THEN 'medium'
+       ELSE 'small' END
+       AS geosize_group
+INTO countries_plus
+FROM countries;
+```
+You will now explore the relationship between the size of a country in terms of surface area and in terms of population using grouping fields created with `CASE`.
+
+INSTRUCTIONS 1.1
+
+<img width="442" alt="image" src="https://user-images.githubusercontent.com/68601128/120253537-00bc8000-c25e-11eb-8fed-afd0bd4823e6.png">
+
+```SQL
+SELECT country_code, size,
+    -- 1. First case
+    CASE WHEN size > 50000000 THEN 'large'
+        -- 2. Second case
+        WHEN size > 1000000 THEN 'medium'
+        -- 3. Else clause + end
+        ELSE 'small' END
+        -- 4. Alias name (popsize_group)
+        AS popsize_group
+-- 5. From table
+FROM populations
+-- 6. Focus on 2015
+WHERE year = 2015;
+```
+
+OUTPUT
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120253567-15007d00-c25e-11eb-9e8c-e360a86c7cc3.png">
+
+INSTRUCTION 1.2
+
++ Use `INTO` to save the result of the previous query as `pop_plus`. You can see an example of this in the countries_plus code in the assignment text. Make sure to include a `; ` at the end of your `WHERE` clause!
+
++ Then, include another query below your first query to display all the records in pop_plus using `SELECT * FROM pop_plus`; so that you generate results and this will display `pop_plus` in query result.
+
+```SQL
+SELECT country_code, size,
+    CASE WHEN size > 50000000 THEN 'large'
+        WHEN size > 1000000 THEN 'medium'
+        ELSE 'small' END
+        AS popsize_group
+-- 1. Into table
+INTO pop_plus
+FROM populations
+WHERE year = 2015;
+
+-- 2. Select all columns of pop_plus
+SELECT * FROM pop_plus
+```
+output
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120253993-2eee8f80-c25f-11eb-9b16-180555d2adb4.png">
+
+INSTRUCTION 1.3
+
++ Keep the first query intact that creates pop_plus using `INTO`.
++ Write a query to join `countries_plus AS c` on the left with `pop_plus AS p` on the right matching on the country code fields.
++ Sort the data based on geosize_group, in ascending order so that large appears on top.
++ Select the `name`, `continent`, `geosize_group`, and `popsize_group` fields.
+
+### CHAPTER 2 - OUTER JOINs
+
+**LEFT and RIGHT JOINs
+
+Congratulations on completing Chapter 1 on INNER JOINs. Welcome to Chapter 2 on OUTER JOINs! You can remember outer joins as reaching OUT to another table while keeping all of the records of the original table. Inner joins keep only the records IN both tables. You'll begin this chapter by exploring (1) LEFT JOINs, (2) RIGHT JOINs, and (3) FULL JOINs, which are the three types of OUTER JOINs. Let's begin by exploring how a LEFT JOIN differs from an INNER JOIN via a diagram. 
+
+<img width="318" alt="image" src="https://user-images.githubusercontent.com/68601128/120348138-46676000-c2d3-11eb-97e2-f5b9d165f100.png">
+
+
+<img width="894" alt="image" src="https://user-images.githubusercontent.com/68601128/120255722-010b4a00-c263-11eb-9c67-3b4352eea4f2.png">
+
+<img width="590" alt="image" src="https://user-images.githubusercontent.com/68601128/120349306-62b7cc80-c2d4-11eb-8e9b-dd2f34f83ecc.png">
+
+The RIGHT JOIN is much less common than the LEFT JOIN so we won't spend as much time on it here. 
+
+<img width="638" alt="image" src="https://user-images.githubusercontent.com/68601128/120363636-bf21e880-c2e2-11eb-9b59-f9e80856184b.png">
+
+**LEFT JOIN EXAMPLES**
+
+Now you'll explore the differences between performing an inner join and a left join using the cities and countries tables.
+
+You'll begin by performing an inner join with the cities table on the left and the countries table on the right. Remember to alias the name of the city field as city and the name of the country field as country.
+
+INSTRUCTIONS 1.1 
+
++ Fill in the code based on the instructions in the code comments to complete the inner join. Note how many records are in the result of the join in the query result tab.
+
+```SQL
+-- Select the city name (with alias), the country code,
+-- the country name (with alias), the region,
+-- and the city proper population
+SELECT c1.name AS country, code, c2.name AS city,
+       region, city_proper_pop
+-- From left table (with alias)
+FROM countries AS c1
+  -- Join to right table (with alias)
+  INNER JOIN cities AS c2
+    -- Match on country code
+    ON c1.code = c2.country_code
+-- Order by descending country code
+ORDER BY code DESC;
+
+```
+<img width="744" alt="image" src="https://user-images.githubusercontent.com/68601128/120364382-92220580-c2e3-11eb-8321-4f4f3a7b3b23.png">
+
+INSTRUCTION 1.2
+
++ Change the code to perform a LEFT JOIN instead of an INNER JOIN. After executing this query, note how many records the query result contains.
+
+```SQL
+SELECT c1.name AS city, code, c2.name AS country,
+       region, city_proper_pop
+FROM cities AS c1
+  -- 1. Join right table (with alias)
+  LEFT JOIN countries AS c2
+    -- 2. Match on country code
+    ON c1.country_code = c2.code
+-- 3. Order by descending country code
+ORDER BY code DESC;
+```
+
+OUTPUT
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120364980-46239080-c2e4-11eb-8df4-4c99360b722f.png">
+
+<img width="455" alt="image" src="https://user-images.githubusercontent.com/68601128/120365051-5d627e00-c2e4-11eb-8563-c5f54dc61851.png">
+
+
+INSTRUCTION
+
++ Modify your code to calculate the average GDP per capita AS avg_gdp for each region in 2010.
++ Select the region and avg_gdp fields.
+
+```SQL
+-- Select fields
+SELECT region, AVG(gdp_percapita) AS avg_gdp
+-- From countries (alias as c)
+FROM countries AS c
+  -- Left join with economies (alias as e)
+  LEFT JOIN economies AS e
+    -- Match on code field'''
+    ON c.code = e.code
+-- Focus on 2010
+WHERE year = 2010
+-- Group by region
+GROUP BY region;
+```
+
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/68601128/120409826-2a41de00-c328-11eb-9e51-73382d06d647.png">
+
+INSTRUCTION 1.2
+
++ Arrange this data on average GDP per capita for each region in 2010 from highest to lowest average GDP per capita.
+
+```SQL
+-- Select fields
+SELECT region, AVG(gdp_percapita) AS avg_gdp
+-- From countries (alias as c)
+FROM countries AS c
+  -- Left join with economies (alias as e)
+  LEFT JOIN economies AS e
+    -- Match on code fields
+    ON c.code = e.code
+-- Focus on 2010
+WHERE year = 2010
+-- Group by region
+GROUP BY region
+-- Order by descending avg_gdp
+ORDER BY avg_gdp DESC;
+```
+
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/68601128/120410068-ae946100-c328-11eb-9d72-ccd9b8972dc5.png">
+
+**RIGHT JOINS**
+
+2. INNER JOIN vs LEFT JOIN
+
+Recall that an INNER JOIN keeps only the records that have matching key field values in both tables. A LEFT JOIN keeps all of the records in the left table while bringing in missing values for those key field values that don't appear in the right table.
+
+<img width="614" alt="image" src="https://user-images.githubusercontent.com/68601128/120410372-3c704c00-c329-11eb-8817-d23eda1cced5.png">
+
+3. LEFT JOIN vs RIGHT JOIN
+
+Now you can see the differences between a LEFT JOIN and a RIGHT JOIN. The id values of 2 and 3 in the left table do not match with the id values in the right table, so missing values are brought in for them in the LEFT JOIN. Likewise for the RIGHT JOIN, missing values are brought in for id values of 5 and 6. 
+
+<img width="611" alt="image" src="https://user-images.githubusercontent.com/68601128/120410476-72adcb80-c329-11eb-80a9-d8c51bce8ad8.png">
+
+5. FULL JOIN diagram
+
+Note the missing values here and that all six of the values of id are included in the table. You can also see from the SQL code to produce this FULL JOIN result that the general format aligns closely with the SQL syntax you've seen for both an INNER JOIN and a LEFT JOIN. You'll next explore an example from the leaders database. 
+
+<img width="881" alt="image" src="https://user-images.githubusercontent.com/68601128/120410559-96711180-c329-11eb-8706-45b8271bed33.png">
+
+<img width="633" alt="image" src="https://user-images.githubusercontent.com/68601128/120410719-e8199c00-c329-11eb-88fd-03719c68e3b8.png">
+
+<img width="703" alt="image" src="https://user-images.githubusercontent.com/68601128/120410793-14351d00-c32a-11eb-9c30-6660df1e7726.png">
+
+<img width="644" alt="image" src="https://user-images.githubusercontent.com/68601128/120410820-20b97580-c32a-11eb-9dda-25a3b609e6c4.png">
+
+**FULL JOIN EXAMPLES**
+
+In this exercise, you'll examine how your results differ when using a full join versus using a left join versus using an inner join with the `countries` and `currencies` tables.
+
+You will focus on the North American `region` and also where the `name` of the country is missing. Dig in to see what we mean!
+
+Begin with a full join with countries on the left and currencies on the right. The fields of interest have been SELECTed for you throughout this exercise.
+
+Then complete a similar left join and conclude with an inner join.
+
+`Countries table`
+
+<img width="1094" alt="image" src="https://user-images.githubusercontent.com/68601128/120410995-6f670f80-c32a-11eb-827b-4feeecf336c6.png">
+
+`Currencies table`
+
+<img width="1090" alt="image" src="https://user-images.githubusercontent.com/68601128/120411041-80b01c00-c32a-11eb-9a70-97b7809640ae.png">
 
 
 
