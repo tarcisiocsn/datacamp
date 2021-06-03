@@ -1618,8 +1618,175 @@ LIMIT 5;
 <img width="751" alt="image" src="https://user-images.githubusercontent.com/68601128/120414822-ef907380-c330-11eb-99bb-a4dc81f2a0de.png">
 
 
+**STATE OF THE UNION**
+
+<img width="909" alt="image" src="https://user-images.githubusercontent.com/68601128/120532264-e3022e80-c3b5-11eb-8901-57a9afa2d53a.png">
+
+<img width="238" alt="image" src="https://user-images.githubusercontent.com/68601128/120532383-0200c080-c3b6-11eb-86b3-e1c5104b7dbf.png">
+
+<img width="206" alt="image" src="https://user-images.githubusercontent.com/68601128/120532475-1644bd80-c3b6-11eb-9c85-0490a9e7c8c6.png">
+
+By contrast (with the same two tables left_one and right_one), UNION ALL includes all duplicates in its result. So left_one and right_one both having four records yields eight records for the result of the UNION ALL. If it were the case that right_one had these same four values and also one more value of 1 for id, you'd see three entries for 1 in the resulting UNION ALL. Let's check out the SQL syntax using the leaders database for both UNION and UNION ALL, but first you'll see one more table in the leaders database. 
+
+<img width="603" alt="image" src="https://user-images.githubusercontent.com/68601128/120532581-2e1c4180-c3b6-11eb-9ded-7815d1cfe74d.png">
+
+<img width="605" alt="image" src="https://user-images.githubusercontent.com/68601128/120532649-455b2f00-c3b6-11eb-88ec-75ff113b6d1b.png">
+
+that UNION and UNION ALL clauses do not do the lookup step that JOINs do. They simply stack records on top of each other from one table to the next. 
+
+**UNION EXAMPLES**
+
+Economies table
+
+<img width="1221" alt="image" src="https://user-images.githubusercontent.com/68601128/120533496-26a96800-c3b7-11eb-8110-75d8b170972d.png">
+
+Economies2015 table
+
+<img width="1218" alt="image" src="https://user-images.githubusercontent.com/68601128/120533527-3163fd00-c3b7-11eb-87b5-2ab83843c6bc.png">
+
+Economies2010 table
+
+<img width="1221" alt="image" src="https://user-images.githubusercontent.com/68601128/120533587-42ad0980-c3b7-11eb-8f71-83382f4a0fc6.png">
 
 
+INSTRUCTION
+
++ Combine these two tables into one table containing all of the fields in economies2010. The economies table is also included for reference.
++ Sort this resulting single table by country code and then by year, both in ascending order.
+
+```SQL
+-- Select fields from 2010 table
+SELECT *
+  -- From 2010 table
+FROM economies2010
+	-- Set theory clause
+UNION
+-- Select fields from 2015 table
+SELECT *
+  -- From 2015 table
+FROM economies2015
+-- Order by code and year
+ORDER BY code, year;
+```
+
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/68601128/120533410-15f8f200-c3b7-11eb-8eec-ee8658d5ddc3.png">
+
+
+**UNION 2 EXAMPLE**
+
+INSTRUCTION 
+
++ Determine all (non-duplicated) country codes in either the cities or the currencies table. The result should be a table with only one field called country_code.
++ Sort by country_code in alphabetical order.
+
+```SQL 
+-- Select field
+SELECT DISTINCT country_code
+  -- From cities
+  FROM cities
+	-- Set theory clause
+	UNION
+-- Select field
+SELECT DISTINCT code
+  -- From currencies
+  FROM currencies
+-- Order by country_code
+order by country_code;
+```
+
+<img width="517" alt="image" src="https://user-images.githubusercontent.com/68601128/120534023-c0711500-c3b7-11eb-94b1-d2b5bca9071a.png">
+
+**UNION ALL EXAMPLE**
+
+As you saw, duplicates were removed from the previous two exercises by using `UNION`.
+
+To include duplicates, you can use `UNION ALL`.
+
+INSTRUCTION
+
++ Determine all combinations (include duplicates) of country code and year that exist in either the economies or the populations tables. Order by code then year.
++ The result of the query should only have two columns/fields. Think about how many records this query should result in.
++ You'll use code very similar to this in your next exercise after the video. Make note of this code after completing it.
+
+```SQL
+-- Select fields
+SELECT code, year
+  -- From economies
+  FROM economies
+	-- Set theory clause
+	UNION ALL
+-- Select fields
+SELECT country_code, year
+  -- From populations
+  FROM populations
+-- Order by code, year
+ORDER BY code, year;
+```
+
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/68601128/120534438-35444f00-c3b8-11eb-929b-1ba07a2d7abd.png">
+
+
+**INTERSECT DIAGRAM AND SQL CODE**
+
+Vale lembrar que intersect precisa ter o SELECT igual na coluna.
+
+<img width="646" alt="image" src="https://user-images.githubusercontent.com/68601128/120534662-7ccadb00-c3b8-11eb-9bac-ad3ef10cc98c.png">
+
+
+<img width="622" alt="image" src="https://user-images.githubusercontent.com/68601128/120534743-92d89b80-c3b8-11eb-990f-2b80897d0435.png">
+
+Next, let's think about what would happen if we tried to select two columns instead of one from our previous example. The code shown does just that. What will be the result of this query? Will this also give you the names of the countries that have both a prime minister and a president? Hmmm [PAUSE] The actual result is an empty table. Why is that? When INTERSECT looks at two columns it includes both columns in the search. So it didn't find any countries with prime ministers AND presidents having the same name. INTERSECT looks for RECORDS in common, not individual key fields like what a join does to match. This is an important distinction.
+
+<img width="596" alt="image" src="https://user-images.githubusercontent.com/68601128/120534861-b4398780-c3b8-11eb-9ac0-f3e85de5261a.png">
+
+**INTERSECT EXAMPLE**
+
++ Again, order by `code` and then by `year`, both in ascending order.
++ Note the number of records here (given at the bottom of query result) compared to the similar `UNION ALL` query result (814 records).
+
+```SQL
+-- Select fields
+SELECT code, year
+  -- From economies
+  FROM economies
+	-- Set theory clause
+	INTERSECT
+-- Select fields
+SELECT country_code, year
+  -- From populations
+  FROM populations
+-- Order by code and year
+ORDER BY code, year;
+```
+
+<img width="718" alt="image" src="https://user-images.githubusercontent.com/68601128/120535480-65d8b880-c3b9-11eb-9315-845a231073cd.png">
+
+
+**INTERSCT 2 EXAMPLE**
+
+As you think about major world cities and their corresponding country, you may ask which countries also have a city with the same name as their country name?
+
+INSTRUCTIONS
+
+Use `INTERSECT` to answer this question with countries and cities!
+
+```SQL 
+-- Select fields
+SELECT name, code
+  -- From countries
+  FROM countries
+	-- Set theory clause
+	INTERSECT
+-- Select fields
+SELECT name, country_code
+  -- From cities
+FROM cities;
+```
+<img width="708" alt="image" src="https://user-images.githubusercontent.com/68601128/120536168-370f1200-c3ba-11eb-9ba6-2fe77e59c0a0.png">
+
+**EXCEPTIONAL**
+
+<img width="601" alt="image" src="https://user-images.githubusercontent.com/68601128/120543205-70e41680-c3c2-11eb-84db-7623cc43d471.png">
 
 
 
