@@ -1915,6 +1915,243 @@ SELECT DISTINCT(name)
 -- Order by name
 ORDER BY name;
 ```
+INSTRUCTIONS 1.3
 
+Now combine the previous two queries into one query:
+
++ Add a WHERE IN statement to the SELECT DISTINCT query, and use the commented out query from the first instruction in there. That way, you can determine the unique languages spoken in the Middle East.
+
+Carefully review this result and its code after completing it. It serves as a great example of subqueries, which are the focus of Chapter 4.
+
+```SQL
+-- Select distinct fields
+SELECT DISTINCT(name)
+  -- From languages
+  FROM languages
+-- Where in statement
+WHERE code IN
+  -- Subquery
+  (SELECT code
+   FROM countries
+   WHERE region = 'Middle East')
+-- Order by name
+ORDER BY name;
+```
+<img width="547" alt="image" src="https://user-images.githubusercontent.com/68601128/120668286-b2c59900-c464-11eb-9245-4d41de2708ad.png">
+
+**Diagnosing problems using anti-join**
+
+Another powerful join in SQL is the anti-join. It is particularly useful in identifying which records are causing an incorrect number of records to appear in join queries.
+
+You will also see another example of a subquery here, as you saw in the first exercise on semi-joins. Your goal is to identify the currencies used in Oceanian countries!
+
+INSTRUCTIONS
+
+Begin by determining the number of countries in `countries` that are listed in Oceania using SELECT, FROM, and WHERE.
+
+```SQL 
+-- Select statement
+SELECT count(code)
+  -- From countries
+  FROM countries
+-- Where continent is Oceania
+WHERE continent = 'Oceania';
+```
+
+<img width="739" alt="image" src="https://user-images.githubusercontent.com/68601128/120691219-8b7ac600-c47c-11eb-9c60-7403c38a442b.png">
+
+INSTRUCTIONS 1.2
+
+
++ complete an inner join with `countries AS c1` on the left and `currencies AS c2` on the right to get the different currencies used in the countries of Oceania.
++ Match `ON` the `code` field in the two tables.
++ Include the country `code`, country name, and `basic_unit AS currency`.
+
+Observe query result and make note of how many different countries are listed here.
+
+```SQL
+-- 5. Select fields (with aliases)
+SELECT c1.code, name, basic_unit AS currency
+  -- 1. From countries (alias as c1)
+  FROM countries as c1
+  	-- 2. Join with currencies (alias as c2)
+  	INNER JOIN currencies c2
+    -- 3. Match on code
+    ON c1.code = c2.code
+-- 4. Where continent is Oceania
+WHERE continent = 'Oceania';
+```
+
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/68601128/120691418-d09ef800-c47c-11eb-84f9-ff7abffd4a7a.png">
+
+INSTRUCTION 1.3
+
+Note that not all countries in Oceania were listed in the resulting inner join with currencies. Use an anti-join to determine which countries were not included!
+
++ Use NOT IN and (SELECT code FROM currencies) as a subquery to get the country code and country name for the Oceanian countries that are not included in the currencies table.
+
+```SQL 
+-- 3. Select fields
+SELECT code, name
+  -- 4. From Countries
+  FROM countries
+  -- 5. Where continent is Oceania
+  WHERE continent = 'Oceania'
+  	-- 1. And code not in
+  	AND code NOT IN
+  	-- 2. Subquery
+  	(SELECT code
+  	 FROM currencies);
+```
+
+<img width="744" alt="image" src="https://user-images.githubusercontent.com/68601128/120691477-e7dde580-c47c-11eb-9fcc-58cb40f3f465.png">
+
+
+**SET THEORY CHALLENGE**
+
+Congratulations! You've now made your way to the challenge problem for this third chapter. Your task here will be to incorporate two of UNION/UNION ALL/INTERSECT/EXCEPT to solve a challenge involving three tables.
+
+In addition, you will use a subquery as you have in the last two exercises! This will be great practice as you hop into subqueries more in Chapter 4!
+
+INSTRUCTIONS
+
++ dentify the country codes that are included in either economies or currencies but not in populations.
++ Use that result to determine the names of cities in the countries that match the specification in the previous instruction.
+
+```SQL
+-- Select the city name
+SELECT name
+  -- Alias the table where city name resides
+  FROM cities AS c1
+  -- Choose only records matching the result of multiple set theory clauses
+  WHERE country_code IN
+(
+    -- Select appropriate field from economies AS e
+    SELECT e.code
+    FROM economies AS e
+    -- Get all additional (unique) values of the field from currencies AS c2  
+    UNION
+    SELECT c2.code
+    FROM currencies AS c2
+    -- Exclude those appearing in populations AS p
+    EXCEPT
+    SELECT p.country_code
+    FROM populations AS p
+);
+
+```
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120692586-58393680-c47e-11eb-9756-06fdab632b16.png">
+
+
+**Subqueries inside WHERE and SELECT clauses**
+
+You'll now try to figure out which countries had high average life expectancies (at the country level) in 2015.
+
+INSTRUCTIONS 1.1
+
+populations table
+
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/68601128/120703882-42327280-c48c-11eb-843e-7afefd836924.png">
+
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120703207-617cd000-c48b-11eb-97bf-114cbf77b404.png">
+
+
++ Begin by calculating the average life expectancy across all countries for 2015.
+
+```SQL 
+-- Select average life_expectancy
+SELECT avg(life_expectancy)
+  -- From populations
+  FROM populations
+-- Where year is 2015
+WHERE year = 2015
+```
+
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/68601128/120703172-588bfe80-c48b-11eb-89c9-4792d0ac6491.png">
+
+INSTRUCTION 1.2
+
+<img width="464" alt="image" src="https://user-images.githubusercontent.com/68601128/120703317-84a77f80-c48b-11eb-9d54-f512c5b74b93.png">
+
+```sql
+-- Select fields
+SELECT *
+  -- From populations
+  FROM populations
+-- Where life_expectancy is greater than
+WHERE life_expectancy > 
+  -- 1.15 * subquery
+  1.15 *
+  (SELECT avg(life_expectancy)
+  -- From populations
+  FROM populations
+-- Where year is 2015
+WHERE year = 2015 )
+AND year = 2015;
+```
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120704043-786ff200-c48c-11eb-8c16-90a1f4116f08.png">
+
+**Subquery inside where (2)**
+
+Use your knowledge of subqueries in `WHERE` to get the urban area population for only capital cities.
+
+INSTRUCTIONS 
+
++ Make use of the capital field in the countries table in your subquery.
++ Select the city name, country code, and urban area population fields.
+
+```sql
+-- 2. Select fields
+SELECT cities.name, country_code, urbanarea_pop
+  -- 3. From cities
+  FROM cities
+-- 4. Where city name in the field of capital cities
+WHERE name IN
+  -- 1. Subquery
+  (SELECT capital
+   FROM countries)
+ORDER BY urbanarea_pop DESC;
+```
+
+<img width="741" alt="image" src="https://user-images.githubusercontent.com/68601128/120704624-2ed3d700-c48d-11eb-82ee-784fc7320914.png">
+
+**Subquery inside select**
+
+In this exercise, you'll see how some queries can be written using either a join or a subquery.
+
+You have seen previously how to use `GROUP BY` with aggregate functions and an inner join to get summarized information from multiple tables.
+
+The code given in query.sql selects the top nine countries in terms of number of cities appearing in the `cities` table. Recall that this corresponds to the most populous cities in the world. Your task will be to convert the commented out code to get the same result as the code shown.
+
+INSTRUCTIONS 1.1
+
+Just Submit Answer here!
+
+```SQL
+SELECT countries.name AS country, COUNT(*) AS cities_num
+  FROM cities
+    INNER JOIN countries
+    ON countries.code = cities.country_code
+GROUP BY country
+ORDER BY cities_num DESC, country
+LIMIT 9;
+
+/* 
+SELECT ___ AS ___,
+  (SELECT ___
+   FROM ___
+   WHERE countries.code = cities.country_code) AS cities_num
+FROM ___
+ORDER BY ___ ___, ___
+LIMIT 9;
+*/
+```
+
+<img width="751" alt="image" src="https://user-images.githubusercontent.com/68601128/120704920-8eca7d80-c48d-11eb-8f23-c3c945c268ae.png">
+
+INSTRUCTIONS 1.2
 
 
