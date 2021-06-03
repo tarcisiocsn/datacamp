@@ -1788,9 +1788,133 @@ FROM cities;
 
 <img width="601" alt="image" src="https://user-images.githubusercontent.com/68601128/120543205-70e41680-c3c2-11eb-84db-7623cc43d471.png">
 
+<img width="587" alt="image" src="https://user-images.githubusercontent.com/68601128/120663553-7ee87480-c460-11eb-9ed5-6964362aa311.png">
+
+2. Monarchs that aren't prime ministers
+
+You saw earlier that there are some monarchs that also act as the prime minister for their country. One way to determine those monarchs in the monarchs table that do not also hold the title of prime minister is to use the EXCEPT clause. [CLICK] This SQL query selects the monarch field from monarchs and then looks for common entries with the prime_ministers field, while also keeping track of the country for each leader. [CLICK] You can see in the resulting query that only the two European monarchs are not also prime ministers in the leaders database.
 
 
+3. EXCEPT diagram
 
+<img width="262" alt="image" src="https://user-images.githubusercontent.com/68601128/120663507-74c67600-c460-11eb-9e06-605bd96e4206.png">
+
+This diagram gives the structure of EXCEPT clauses. Only the records that appear in the left table BUT DO NOT appear in the right table are included. 
+
+**EXCEPT EXAMPLES**
+
+Get the names of cities in `cities` which are not noted as capital cities in `countries` as a single field result.
+
+Note that there are some countries in the world that are not included in the `countries` table, which will result in some cities not being labeled as capital cities when in fact they are.
+
+INSTRUCTIONS
+
+cities table
+
+<img width="1132" alt="image" src="https://user-images.githubusercontent.com/68601128/120664689-865c4d80-c461-11eb-8660-ce065e60553d.png">
+
+countries table
+
+<img width="1209" alt="image" src="https://user-images.githubusercontent.com/68601128/120664787-9a07b400-c461-11eb-8093-79dbbd63f136.png">
+
+
++ Order the resulting field in ascending order.
++ Can you spot the city/cities that are actually capital cities which this query misses?
+
+```sql
+-- Select field
+SELECT name
+  -- From cities
+  FROM cities
+	-- Set theory clause
+  EXCEPT
+-- Select field
+SELECT capital
+  -- From countries
+  FROM countries
+-- Order by result
+ORDER BY name;
+```
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120664614-76446e00-c461-11eb-94f6-ae8fd0b9216b.png">
+
+
+**EXCEPT 2**
+
+Now you will complete the previous query in reverse!
+
+Determine the names of capital cities that are not listed in the cities table.
+
+INSTRUCTIONS 
+
++ Order by capital in ascending order.
++ The cities table contains information about 236 of the world's most populous cities. The result of your query may surprise you in terms of the number of capital cities that DO NOT appear in this list!
+
+```SQL
+-- Select field
+SELECT capital
+  -- From countries
+  FROM countries
+	-- Set theory clause
+	EXCEPT
+-- Select field
+SELECT name
+  -- From cities
+  FROM cities
+-- Order by ascending capital
+ORDER BY capital;
+```
+
+<img width="747" alt="image" src="https://user-images.githubusercontent.com/68601128/120665241-f9fe5a80-c461-11eb-87c9-b4a37bee2644.png">
+
+
+> You'll now close this chapter by returning to joins. The six joins you've worked with so far are all additive joins in that they add columns to the original "left" table. Can you name all six? (1. INNER JOIN, 2. self-join, 3. LEFT JOIN, 4. RIGHT JOIN, 5. FULL JOIN, and 6. CROSS JOIN). 
+
+**SEMI-JOINS AND ANTI-JOINS**
+
+**SEMI-JOIN EXAMPLE**
+
+You are now going to use the concept of a semi-join to identify languages spoken in the Middle East.
+
+languages table
+
+<img width="745" alt="image" src="https://user-images.githubusercontent.com/68601128/120666195-c8d25a00-c462-11eb-8d9f-f9c5dc012a66.png">
+
+countries table
+
+<img width="743" alt="image" src="https://user-images.githubusercontent.com/68601128/120666289-d7207600-c462-11eb-9729-d6a519bd19c1.png">
+
+INSTRUCTIONS 1.1
+
+Flash back to our Intro to SQL for Data Science course and begin by selecting all country codes in the Middle East as a single field result using SELECT, FROM, and WHERE.
+
+```sql
+-- Select code
+SELECT code
+  -- From countries
+  FROM countries
+-- Where region is Middle East
+WHERE region = 'Middle East';
+```
+
+INSTRUCTIONS 1.2
+
++ Comment out the answer to the previous tab by surrounding it in `/* ` and `*/`. You'll come back to it!
++ Below the commented code, select only unique languages by name appearing in the `languages` table.
++ Order the resulting single field table by `name` in ascending order.
+
+```SQL
+/*SELECT code
+  FROM countries
+WHERE region = 'Middle East';*/
+
+-- Select field
+SELECT DISTINCT(name)
+  -- From languages
+  FROM languages
+-- Order by name
+ORDER BY name;
+```
 
 
 
