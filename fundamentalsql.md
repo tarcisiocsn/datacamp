@@ -2349,6 +2349,37 @@ ORDER BY c.name;
 
 Wow! Well done! This code works since each of the six maximum inflation rate values occur only once in the 2015 data. Think about whether this particular code involving subqueries would work in cases where there are ties for the maximum inflation rate values.
 
+**SUBQUERY CHALLENGE**
+
+Let's test your understanding of the subqueries with a challenge problem! Use a subquery to get 2015 economic data for countries that do not have
+
++ `gov_form` of `'Constitutional Monarchy'` or
++ `'Republic'` in their `gov_form`.
+
+Here, `gov_form` stands for the form of the government for each country. Review the different entries for `gov_form` in the `countries` table.
+
+INSTRUCTIONS
+
++ Select the country code, inflation rate, and unemployment rate.
++ Order by inflation rate ascending.
++ Do not use table aliasing in this exercise.
+
+```SQL
+-- Select fields
+SELECT code, inflation_rate, unemployment_rate
+  -- From economies
+  FROM economies
+  -- Where year is 2015 and code is not in
+  WHERE year = 2015 AND code NOT IN
+  	-- Subquery
+  	(SELECT code
+  	 FROM countries
+  	 WHERE (gov_form = 'Constitutional Monarchy' OR gov_form LIKE '%Republic%'))
+-- Order by inflation rate
+ORDER BY inflation_rate;
+```
+<img width="743" alt="image" src="https://user-images.githubusercontent.com/68601128/120834470-6c8e3980-c539-11eb-9880-2d28f0aaaec4.png">
+
 
 **FINAL CHALLENGE**
 
@@ -2359,6 +2390,12 @@ Read carefully over the instructions and solve them step-by-step, thinking about
 In this exercise, you'll need to get the country names and other 2015 data in the economies table and the countries table for **Central American countries** with an official language.
 
 INSTRUCTIONS
+
++ Select unique country names. Also select the total investment and imports fields.
++ Use a left join with countries on the left. (An inner join would also work, but please use a left join here.)
++ Match on code in the two tables AND use a subquery inside of ON to choose the appropriate languages records.
++ Order by country name ascending.
++ Use table aliasing but not field aliasing in this exercise.
 
 economies table
 
@@ -2372,9 +2409,100 @@ languages table
 
 <img width="1215" alt="image" src="https://user-images.githubusercontent.com/68601128/120711759-2207b100-c496-11eb-8610-416322404111.png">
 
+```SQL
+-- Select fields
+SELECT DISTINCT c.name, total_investment, imports
+  -- From table (with alias)
+  FROM countries AS c
+    -- Join with table (with alias)
+    LEFT JOIN economies AS e
+      -- Match on code
+      ON (c.code = e.code
+      -- and code in Subquery
+        AND c.code IN (
+          SELECT l.code
+          FROM languages AS l
+          WHERE official = 'True'
+        ) )
+  -- Where region and year are correct
+  WHERE region = 'Central America'  AND year = 2015
+-- Order by field
+ORDER BY c.name;
+```
+<img width="752" alt="image" src="https://user-images.githubusercontent.com/68601128/120834849-f5a57080-c539-11eb-9cf1-41b56c30d0f2.png">
+
+**Final Challenge 2**
+
+Whoofta! That was challenging, huh?
+
+Let's ease up a bit and calculate the average fertility rate for each region in 2015.
+
+INSTRUCTIONS
+
++ Include the name of region, its continent, and average fertility rate aliased as avg_fert_rate.
++ Sort based on avg_fert_rate ascending.
++ Remember that you'll need to GROUP BY all fields that aren't included in the aggregate function of SELECT.
+
+```SQL
+-- Select fields
+SELECT c.region, c.continent, AVG(fertility_rate) AS avg_fert_rate
+  -- From left table
+  FROM populations AS p
+    -- Join to right table
+    INNER JOIN  countries AS c
+      -- Match on join condition
+      ON c.code = p.country_code
+  -- Where specific records matching some condition
+  WHERE year = 2015
+-- Group appropriately
+GROUP BY region, continent
+-- Order appropriately
+ORDER BY avg_fert_rate;
+```
+
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/68601128/120838277-02c45e80-c53e-11eb-8d9d-93744cf06229.png">
+
+**FINAL CHALLENGE 3**
+
+Welcome to the last challenge problem. By now you're a query warrior! Remember that these challenges are designed to take you to the limit to solidify your SQL knowledge! Take a deep breath and solve this step-by-step.
+
+You are now tasked with determining the top 10 capital cities in Europe and the Americas in terms of a calculated percentage using `city_proper_pop` and `metroarea_pop` in `cities`.
+
+Do not use table aliasing in this exercise.
+
+INSTRUCTIONS 
++ Select the city name, country code, city proper population, and metro area population.
++ Calculate the percentage of metro area population composed of city proper population for each city in cities, aliased as city_perc.
++ Focus only on capital cities in Europe and the Americas in a subquery.
++ Make sure to exclude records with missing data on metro area population.
++ Order the result by city_perc descending.
++ Then determine the top 10 capital cities in Europe and the Americas in terms of this city_perc percentage.
+
+```SQL
+-- Select fields
+SELECT name, country_code, city_proper_pop, metroarea_pop,
+	  -- Calculate city_perc
+      city_proper_pop / metroarea_pop * 100 AS city_perc
+  -- From appropriate table    
+  FROM cities
+  -- Where
+  WHERE name IN
+    -- Subquery
+    (SELECT capital
+     FROM countries
+     WHERE (continent = 'Europe'
+        OR continent LIKE '%America'))
+       AND metroarea_pop IS NOT NULL
+-- Order appropriately
+ORDER BY city_perc DESC
+-- Limit amount
+LIMIT 10;
+```
+
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/68601128/120839345-3489f500-c53f-11eb-8284-2f5cd779a986.png">
 
 
-**Final Challenge**
+
 
 
 
