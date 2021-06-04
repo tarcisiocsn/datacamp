@@ -2155,3 +2155,227 @@ LIMIT 9;
 INSTRUCTIONS 1.2
 
 
++ Remove the comments around the second query and comment out the first query instead.
++ Convert the GROUP BY code to use a subquery inside of SELECT, i.e. fill in the blanks to get a result that matches the one given using the GROUP BY code in the first query.
++ Again, sort the result by cities_num descending and then by country ascending.
+
+```SQL
+/*SELECT countries.name AS country, COUNT(*) AS cities_num
+  FROM cities
+    INNER JOIN countries
+    ON countries.code = cities.country_code
+GROUP BY country
+ORDER BY cities_num DESC, country
+LIMIT 9;
+*/
+
+SELECT  countries.name AS country,
+  (SELECT COUNT(*)
+   FROM cities
+   WHERE countries.code = cities.country_code) AS cities_num
+FROM countries
+ORDER BY cities_num DESC, country
+LIMIT 9;
+```
+
+<img width="743" alt="image" src="https://user-images.githubusercontent.com/68601128/120705856-b79f4280-c48e-11eb-8260-697d45d2c949.png">
+
+
+**Subquery inside FROM clause**
+
+The last type of subquery you will work with is one inside of `FROM`.
+
+You will use this to determine the number of languages spoken for each country, identified by the country's local name! (Note this may be different than the name field and is stored in the local_name field.)
+
+INSTRUCTIONS 1.1
+
++ Begin by determining for each country code how many languages are listed in the languages table using SELECT, FROM, and GROUP BY.
++ Alias the aggregated field as lang_num.
+
+
+```sql
+-- Select fields (with aliases)
+SELECT code, COUNT(name) AS lang_num
+  -- From languages
+  FROM languages
+-- Group by code
+GROUP BY code;
+```
+<img width="519" alt="image" src="https://user-images.githubusercontent.com/68601128/120706740-d3571880-c48f-11eb-8b6a-f39a2adb6cbc.png">
+
+INSTRUCTIONS 1.2
+
++ Include the previous query (aliased as subquery) as a subquery in the FROM clause of a new query.
++ Select the local name of the country from countries.
++ Also, select lang_num from subquery.
++ Make sure to use WHERE appropriately to match code in countries and in subquery.
++ Sort by lang_num in descending order.
+
+```SQL
+SELECT local_name, subquery.lang_num
+  FROM countries,
+  	(SELECT code, COUNT(*) AS lang_num
+  	 FROM languages
+  	 GROUP BY code) AS subquery
+  WHERE countries.code = subquery.code
+ORDER BY lang_num DESC;
+```
+
+<img width="748" alt="image" src="https://user-images.githubusercontent.com/68601128/120707652-fcc47400-c490-11eb-9853-eb92eb196437.png">
+
+**ADVANCED SUBQUERY**
+
+You can also nest multiple subqueries to answer even more specific questions.
+
+In this exercise, for each of the six continents listed in 2015, you'll identify which country had the maximum inflation rate (and how high it was) using multiple subqueries. The table result of your query in Task 3 should look something like the following, where anything between < > will be filled in with appropriate values:
+
+<img width="458" alt="image" src="https://user-images.githubusercontent.com/68601128/120712569-2d0f1100-c497-11eb-8c04-442523655cee.png">
+
+Again, there are multiple ways to get to this solution using only joins, but the focus here is on showing you an introduction into advanced subqueries.
+
+INSTRUCTIONS 1.1
+
++ Now it's time to append the second part's query to the first part's query using AND and IN to obtain the name of the country, its continent, and the maximum inflation rate for each continent in 2015!
++ For the sake of practice, change all joining conditions to use ON instead of USING (based upon the same column, code).
++ Revisit the sample output in the assignment text at the beginning of the exercise to see how this matches up.
+
+```sql 
+-- Select fields
+SELECT name, continent, inflation_rate
+  -- From countries
+  FROM countries
+  	-- Join to economies
+  	INNER JOIN economies
+    -- Match on code
+    ON countries.code = economies.code
+-- Where year is 2015
+WHERE year = 2015;
+```
+
+<img width="746" alt="image" src="https://user-images.githubusercontent.com/68601128/120713566-7ca20c80-c498-11eb-82b8-3c08a9b2675a.png">
+
+INSTRUCTIONS 1.2
+
+Select the maximum inflation rate in 2015 `AS max_inf` grouped by continent using the previous step's query as a subquery in the `FROM` clause.
+
+Thus, in your subquery you should:
+        + Create an inner join with `countries` on the left and `economies` on the right with `USING` (without aliasing your tables or columns).
+        + Retrieve the country name, continent, and inflation rate for 2015.
+        + Alias the subquery as `subquery`.
+
+This will result in the six maximum inflation rates in 2015 for the six continents as one field table. Make sure to not include `continent` in the outer `SELECT` statement.
+
+```sql 
+-- Select the maximum inflation rate as max_inf
+SELECT MAX(inflation_rate) AS max_inf
+  -- Subquery using FROM (alias as subquery)
+  FROM ( SELECT name, continent, inflation_rate
+      FROM countries
+      INNER JOIN economies
+      USING(code)
+      WHERE year = 2015
+      ) AS subquery
+-- Group by continent
+GROUP BY continent;
+```
+
+<img width="745" alt="image" src="https://user-images.githubusercontent.com/68601128/120715394-eae7ce80-c49a-11eb-8bec-efce47da4020.png">
+
+INSTRUCTIONS 1.3
+
++ Now it's time to append your second query to your first query using AND and IN to obtain the name of the country, its continent, and the maximum inflation rate for each continent in 2015.
++ For the sake of practice, change all joining conditions to use ON instead of USING.
+
+
+
+```SQL
+-- Select fields
+SELECT name, continent, inflation_rate
+  -- From countries
+  FROM countries
+	-- Join to economies
+	INNER JOIN economies
+	-- Match on code
+	ON countries.code = economies.code
+  -- Where year is 2015
+  WHERE year = 2015
+    -- And inflation rate in subquery (alias as subquery)
+    AND inflation_rate IN (
+        SELECT MAX(inflation_rate) AS max_inf
+        FROM (
+             SELECT name, continent, inflation_rate
+             FROM countries
+             INNER JOIN economies
+             ON economies.code = countries.code
+             WHERE year = 2015) AS subquery
+      -- Group by continent
+        GROUP BY continent);
+
+```
+
+<img width="752" alt="image" src="https://user-images.githubusercontent.com/68601128/120715663-4d40cf00-c49b-11eb-8690-27919e8ce8b7.png">
+
+INSTRUCTIONS 1.3
+
++ Select unique country names. Also select the total investment and imports fields.
++ Use a left join with countries on the left. (An inner join would also work, but please use a left join here.)
++ Match on code in the two tables AND use a subquery inside of ON to choose the appropriate languages records.
++ Order by country name ascending.
++ Use table aliasing but not field aliasing in this exercise.
+
+```SQL
+-- Select fields
+SELECT DISTINCT c.name, total_investment, imports
+  -- From table (with alias)
+  FROM countries AS c
+    -- Join with table (with alias)
+    LEFT JOIN economies AS e
+      -- Match on code
+      ON (c.code = e.code
+      -- and code in Subquery
+        AND c.code IN (
+          SELECT l.code
+          FROM languages AS l
+          WHERE official = 'True'
+        ) )
+  -- Where region and year are correct
+  WHERE region = 'Central America'  AND year = 2015
+-- Order by field
+ORDER BY c.name;
+
+```
+
+<img width="741" alt="image" src="https://user-images.githubusercontent.com/68601128/120711568-ec62c800-c495-11eb-9a09-56e5fcc49e02.png">
+
+Wow! Well done! This code works since each of the six maximum inflation rate values occur only once in the 2015 data. Think about whether this particular code involving subqueries would work in cases where there are ties for the maximum inflation rate values.
+
+
+**FINAL CHALLENGE**
+
+Welcome to the end of the course! The next three exercises will test your knowledge of the content covered in this course and apply many of the ideas you've seen to difficult problems. Good luck!
+
+Read carefully over the instructions and solve them step-by-step, thinking about how the different clauses work together.
+
+In this exercise, you'll need to get the country names and other 2015 data in the economies table and the countries table for **Central American countries** with an official language.
+
+INSTRUCTIONS
+
+economies table
+
+<img width="1210" alt="image" src="https://user-images.githubusercontent.com/68601128/120711622-fa184d80-c495-11eb-9af8-841d8c177c2d.png">
+
+countries table
+
+<img width="1201" alt="image" src="https://user-images.githubusercontent.com/68601128/120711669-0a302d00-c496-11eb-8f37-ede089066517.png">
+
+languages table
+
+<img width="1215" alt="image" src="https://user-images.githubusercontent.com/68601128/120711759-2207b100-c496-11eb-8610-416322404111.png">
+
+
+
+**Final Challenge**
+
+
+
+
