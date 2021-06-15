@@ -600,4 +600,54 @@ RIGHT JOINS are similar to LEFT joins. The difference is that all rows from the 
 
 <img width="863" alt="image" src="https://user-images.githubusercontent.com/68601128/120933275-bd379b00-c6cf-11eb-8741-5723ba295e7a.png">
 
+Hint
 
++ The most common type of join is one that returns rows that match and discards non-matching rows
++ Fully qualified column names begin with the table name, then a period (without any space) and then the column name
+
+RIGHT JOIN EXAMPLE
+
+INSTRUCTIONS 1.1 
+
+Let's now try some RIGHT joins. A RIGHT join will return all rows from the right hand table, plus any matches from the left hand side table.
+
+In addition to performing a RIGHT join, you'll also learn how to avoid problems when different tables have the same column names, by fully qualifying the column in your select statement. Remember, we do this by prefixing the column name with the table name.
+
+For this exercise, we'll return to the Chinook database from earlier in the chapter.
+
++ SELECT the fully qualified column names album_id from album and name from artist. Then, join the tables so that only matching rows are returned (non-matches should be discarded).
+
+```sql 
+-- SELECT the fully qualified album_id column from the album table
+SELECT 
+  album.album_id,
+  title,
+  album.artist_id,
+  -- SELECT the fully qualified name column from the artist table
+  artist.name as artist
+FROM album
+-- Perform a join to return only rows that match from both tables
+INNER JOIN artist ON album.artist_id = artist.artist_id
+WHERE album.album_id IN (213,214)
+```
+
+<img width="981" alt="image" src="https://user-images.githubusercontent.com/68601128/121423404-9afb8280-c946-11eb-95be-edaed2f9de6f.png">
+
+INSTRUCTIONS 1.2
+
++ To complete the query, join the album table to the track table using the relevant fully qualified album_id column. The album table is on the left-hand side of the join, and the additional join should return all matches or NULLs.
+
+```SQL
+SELECT 
+  album.album_id,
+  title,
+  album.artist_id,
+  artist.name as artist
+FROM album
+INNER JOIN artist ON album.artist_id = artist.artist_id
+-- Perform the correct join type to return matches or NULLS from the track table
+RIGHT JOIN track on album.album_id = track.album_id
+WHERE album.album_id IN (213,214)
+```
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/68601128/121424901-380aeb00-c948-11eb-9102-085a58b264d1.png">
