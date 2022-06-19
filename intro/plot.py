@@ -118,5 +118,16 @@ plt.show()
 # View all styles by typing print(plt.style.available) in the console.
 print(plt.style.available)
 
+# PLOT SCATTER - ALPHA IS THE TRANSPARENCY
+plt.scatter(cellphone.x, cellphone.y,
+           color='red',
+           marker='s',
+           alpha = 0.1)
 
+# Add labels
+plt.ylabel('Latitude')
+plt.xlabel('Longitude')
+
+# Display the plot
+plt.show()
 
