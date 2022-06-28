@@ -115,6 +115,8 @@ plt.legend()
 # Display the plot
 plt.show()
 
+# --------------
+
 # View all styles by typing print(plt.style.available) in the console.
 print(plt.style.available)
 
@@ -131,3 +133,57 @@ plt.xlabel('Longitude')
 # Display the plot
 plt.show()
 
+# -----------
+
+# Display the DataFrame hours using print
+print(hours)
+
+# Create a bar plot from the DataFrame hours
+plt.bar(hours.officer, hours.avg_hours_worked,
+        # Add error bars
+        yerr = hours.std_hours_worked) # pega o DF e a coluna que voce quer verificar. Como o grafico é da avg, então vamos ver o erro a partir das horas trabalhadas
+
+# Display the plot
+plt.show()
+
+# -------------
+
+# Plot the number of hours spent on desk work
+plt.bar(hours.officer, hours.desk_work, label='Desk Work')
+
+# Plot the hours spent on field work on top of desk work
+plt.bar(hours.officer, hours.field_work,
+        bottom=hours.desk_work, label='Field Work') # nesse caso fica 2 graficos de barra um sobreposto o outro
+
+# Add a legend
+plt.legend()
+
+# Display the plot
+plt.show()
+
+#---------
+
+# Create a histogram of the column weight from the DataFrame puppies
+plt.hist(puppies.weight)
+
+# Add labels
+plt.xlabel('Puppy Weight (lbs)')
+plt.ylabel('Number of Puppies')
+
+# Display
+plt.show()
+
+#---------
+# Create a histogram
+plt.hist(gravel.radius,
+         bins=40,
+         range=(2, 8),
+         density=True)
+
+# Label plot
+plt.xlabel('Gravel Radius (mm)')
+plt.ylabel('Frequency')
+plt.title('Sample from Shoeprint')
+
+# Display histogram
+plt.show()
