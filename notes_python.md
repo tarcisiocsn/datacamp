@@ -3,6 +3,7 @@
 ##### Data manipulation with pandas
 ```python
 df.describe()
+df.shape()
 ```
 
 
