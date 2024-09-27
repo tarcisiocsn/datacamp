@@ -29,6 +29,21 @@ ind_gt_10k = homelessness[homelessness["individuals"]>10000]
 
 # Filter for rows where region is Mountain
 mountain_reg = homelessness[homelessness["region"]=="Mountain"]
+
+# Filter for rows where family_members is less than 1000 
+# and region is Pacific
+fam_lt_1k_pac = homelessness[(homelessness["family_members"]<1000) & (homelessness["region"]=="Pacific")]
+```
+> Filter homelessness for cases where the USA census state is in the list of Mojave states, canu, assigning to mojave_homelessness. View the printed result.
+```python
+# The Mojave Desert states
+canu = ["California", "Arizona", "Nevada", "Utah"]
+
+# Filter for rows in the Mojave Desert states
+mojave_homelessness = homelessness[homelessness["state"].isin(canu)]
+
+# See the result
+print(mojave_homelessness)
 ```
 
 
